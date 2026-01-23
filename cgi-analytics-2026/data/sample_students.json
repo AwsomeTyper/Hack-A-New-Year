@@ -1,0 +1,1202 @@
+[
+  {
+    "id": 0,
+    "name": "Student_000",
+    "sat_score": 1209,
+    "pell_eligible": false,
+    "base_yield": 0.429597545259111,
+    "net_price": 15120
+  },
+  {
+    "id": 1,
+    "name": "Student_001",
+    "sat_score": 1133,
+    "pell_eligible": true,
+    "base_yield": 0.26742508365045986,
+    "net_price": 29323
+  },
+  {
+    "id": 2,
+    "name": "Student_002",
+    "sat_score": 1339,
+    "pell_eligible": true,
+    "base_yield": 0.5409729556485984,
+    "net_price": 28648
+  },
+  {
+    "id": 3,
+    "name": "Student_003",
+    "sat_score": 1242,
+    "pell_eligible": true,
+    "base_yield": 0.3045474901621302,
+    "net_price": 15668
+  },
+  {
+    "id": 4,
+    "name": "Student_004",
+    "sat_score": 1179,
+    "pell_eligible": true,
+    "base_yield": 0.3373687420594126,
+    "net_price": 24237
+  },
+  {
+    "id": 5,
+    "name": "Student_005",
+    "sat_score": 920,
+    "pell_eligible": true,
+    "base_yield": 0.33764339456056547,
+    "net_price": 19327
+  },
+  {
+    "id": 6,
+    "name": "Student_006",
+    "sat_score": 1325,
+    "pell_eligible": true,
+    "base_yield": 0.4042703315240835,
+    "net_price": 23848
+  },
+  {
+    "id": 7,
+    "name": "Student_007",
+    "sat_score": 1122,
+    "pell_eligible": true,
+    "base_yield": 0.43226345557043155,
+    "net_price": 15410
+  },
+  {
+    "id": 8,
+    "name": "Student_008",
+    "sat_score": 1077,
+    "pell_eligible": false,
+    "base_yield": 0.3820457481218804,
+    "net_price": 14440
+  },
+  {
+    "id": 9,
+    "name": "Student_009",
+    "sat_score": 1114,
+    "pell_eligible": false,
+    "base_yield": 0.2603165563345655,
+    "net_price": 30186
+  },
+  {
+    "id": 10,
+    "name": "Student_010",
+    "sat_score": 1248,
+    "pell_eligible": true,
+    "base_yield": 0.40602040635334324,
+    "net_price": 22934
+  },
+  {
+    "id": 11,
+    "name": "Student_011",
+    "sat_score": 1003,
+    "pell_eligible": true,
+    "base_yield": 0.5408753883293677,
+    "net_price": 27502
+  },
+  {
+    "id": 12,
+    "name": "Student_012",
+    "sat_score": 1238,
+    "pell_eligible": true,
+    "base_yield": 0.3087948587257436,
+    "net_price": 12904
+  },
+  {
+    "id": 13,
+    "name": "Student_013",
+    "sat_score": 1170,
+    "pell_eligible": true,
+    "base_yield": 0.3666031869068446,
+    "net_price": 17426
+  },
+  {
+    "id": 14,
+    "name": "Student_014",
+    "sat_score": 1094,
+    "pell_eligible": true,
+    "base_yield": 0.41280882494747456,
+    "net_price": 14818
+  },
+  {
+    "id": 15,
+    "name": "Student_015",
+    "sat_score": 1276,
+    "pell_eligible": false,
+    "base_yield": 0.27236519310393126,
+    "net_price": 31737
+  },
+  {
+    "id": 16,
+    "name": "Student_016",
+    "sat_score": 1068,
+    "pell_eligible": true,
+    "base_yield": 0.4946384285364503,
+    "net_price": 26137
+  },
+  {
+    "id": 17,
+    "name": "Student_017",
+    "sat_score": 1223,
+    "pell_eligible": false,
+    "base_yield": 0.48138110400578377,
+    "net_price": 13480
+  },
+  {
+    "id": 18,
+    "name": "Student_018",
+    "sat_score": 1049,
+    "pell_eligible": false,
+    "base_yield": 0.4369894380482674,
+    "net_price": 18617
+  },
+  {
+    "id": 19,
+    "name": "Student_019",
+    "sat_score": 1112,
+    "pell_eligible": true,
+    "base_yield": 0.3432946965146987,
+    "net_price": 18503
+  },
+  {
+    "id": 20,
+    "name": "Student_020",
+    "sat_score": 1247,
+    "pell_eligible": false,
+    "base_yield": 0.3916644775485848,
+    "net_price": 14391
+  },
+  {
+    "id": 21,
+    "name": "Student_021",
+    "sat_score": 1312,
+    "pell_eligible": false,
+    "base_yield": 0.47823551458506924,
+    "net_price": 23225
+  },
+  {
+    "id": 22,
+    "name": "Student_022",
+    "sat_score": 1145,
+    "pell_eligible": false,
+    "base_yield": 0.3782623055075649,
+    "net_price": 12508
+  },
+  {
+    "id": 23,
+    "name": "Student_023",
+    "sat_score": 1337,
+    "pell_eligible": true,
+    "base_yield": 0.25942875570602025,
+    "net_price": 24728
+  },
+  {
+    "id": 24,
+    "name": "Student_024",
+    "sat_score": 1161,
+    "pell_eligible": false,
+    "base_yield": 0.32478766874466247,
+    "net_price": 20207
+  },
+  {
+    "id": 25,
+    "name": "Student_025",
+    "sat_score": 911,
+    "pell_eligible": false,
+    "base_yield": 0.31863944964748675,
+    "net_price": 13539
+  },
+  {
+    "id": 26,
+    "name": "Student_026",
+    "sat_score": 1052,
+    "pell_eligible": false,
+    "base_yield": 0.4924361138693251,
+    "net_price": 24668
+  },
+  {
+    "id": 27,
+    "name": "Student_027",
+    "sat_score": 1089,
+    "pell_eligible": false,
+    "base_yield": 0.49110162306973437,
+    "net_price": 15731
+  },
+  {
+    "id": 28,
+    "name": "Student_028",
+    "sat_score": 1161,
+    "pell_eligible": false,
+    "base_yield": 0.518827389977048,
+    "net_price": 18360
+  },
+  {
+    "id": 29,
+    "name": "Student_029",
+    "sat_score": 1266,
+    "pell_eligible": true,
+    "base_yield": 0.31838054876258254,
+    "net_price": 20542
+  },
+  {
+    "id": 30,
+    "name": "Student_030",
+    "sat_score": 1185,
+    "pell_eligible": true,
+    "base_yield": 0.40322419077326976,
+    "net_price": 20348
+  },
+  {
+    "id": 31,
+    "name": "Student_031",
+    "sat_score": 1181,
+    "pell_eligible": true,
+    "base_yield": 0.28595961020010485,
+    "net_price": 18752
+  },
+  {
+    "id": 32,
+    "name": "Student_032",
+    "sat_score": 1130,
+    "pell_eligible": false,
+    "base_yield": 0.4609056876685534,
+    "net_price": 19272
+  },
+  {
+    "id": 33,
+    "name": "Student_033",
+    "sat_score": 1198,
+    "pell_eligible": false,
+    "base_yield": 0.5387341884826334,
+    "net_price": 17035
+  },
+  {
+    "id": 34,
+    "name": "Student_034",
+    "sat_score": 919,
+    "pell_eligible": true,
+    "base_yield": 0.26106608420635985,
+    "net_price": 24191
+  },
+  {
+    "id": 35,
+    "name": "Student_035",
+    "sat_score": 1146,
+    "pell_eligible": false,
+    "base_yield": 0.2654436253749968,
+    "net_price": 17572
+  },
+  {
+    "id": 36,
+    "name": "Student_036",
+    "sat_score": 1126,
+    "pell_eligible": true,
+    "base_yield": 0.39683582808326895,
+    "net_price": 31713
+  },
+  {
+    "id": 37,
+    "name": "Student_037",
+    "sat_score": 1186,
+    "pell_eligible": true,
+    "base_yield": 0.4516406642217636,
+    "net_price": 27232
+  },
+  {
+    "id": 38,
+    "name": "Student_038",
+    "sat_score": 1244,
+    "pell_eligible": true,
+    "base_yield": 0.43969174917807385,
+    "net_price": 24670
+  },
+  {
+    "id": 39,
+    "name": "Student_039",
+    "sat_score": 1040,
+    "pell_eligible": false,
+    "base_yield": 0.2770869310163225,
+    "net_price": 28706
+  },
+  {
+    "id": 40,
+    "name": "Student_040",
+    "sat_score": 1031,
+    "pell_eligible": true,
+    "base_yield": 0.42726788295647256,
+    "net_price": 25551
+  },
+  {
+    "id": 41,
+    "name": "Student_041",
+    "sat_score": 1082,
+    "pell_eligible": true,
+    "base_yield": 0.4036279174897843,
+    "net_price": 16529
+  },
+  {
+    "id": 42,
+    "name": "Student_042",
+    "sat_score": 1022,
+    "pell_eligible": false,
+    "base_yield": 0.3660206038901612,
+    "net_price": 30734
+  },
+  {
+    "id": 43,
+    "name": "Student_043",
+    "sat_score": 1206,
+    "pell_eligible": true,
+    "base_yield": 0.35231990531507756,
+    "net_price": 14269
+  },
+  {
+    "id": 44,
+    "name": "Student_044",
+    "sat_score": 1247,
+    "pell_eligible": false,
+    "base_yield": 0.4165602434798387,
+    "net_price": 22593
+  },
+  {
+    "id": 45,
+    "name": "Student_045",
+    "sat_score": 1002,
+    "pell_eligible": true,
+    "base_yield": 0.27793083034176974,
+    "net_price": 29944
+  },
+  {
+    "id": 46,
+    "name": "Student_046",
+    "sat_score": 1181,
+    "pell_eligible": true,
+    "base_yield": 0.3547628723837983,
+    "net_price": 26519
+  },
+  {
+    "id": 47,
+    "name": "Student_047",
+    "sat_score": 1243,
+    "pell_eligible": false,
+    "base_yield": 0.5161259272795352,
+    "net_price": 27597
+  },
+  {
+    "id": 48,
+    "name": "Student_048",
+    "sat_score": 1068,
+    "pell_eligible": true,
+    "base_yield": 0.5195662565581238,
+    "net_price": 24128
+  },
+  {
+    "id": 49,
+    "name": "Student_049",
+    "sat_score": 1177,
+    "pell_eligible": true,
+    "base_yield": 0.28044146285980964,
+    "net_price": 25270
+  },
+  {
+    "id": 50,
+    "name": "Student_050",
+    "sat_score": 1373,
+    "pell_eligible": false,
+    "base_yield": 0.31728079283816796,
+    "net_price": 26243
+  },
+  {
+    "id": 51,
+    "name": "Student_051",
+    "sat_score": 1206,
+    "pell_eligible": true,
+    "base_yield": 0.3476199094477803,
+    "net_price": 26929
+  },
+  {
+    "id": 52,
+    "name": "Student_052",
+    "sat_score": 1265,
+    "pell_eligible": false,
+    "base_yield": 0.4204925810006415,
+    "net_price": 13873
+  },
+  {
+    "id": 53,
+    "name": "Student_053",
+    "sat_score": 1199,
+    "pell_eligible": true,
+    "base_yield": 0.32956071030451767,
+    "net_price": 16879
+  },
+  {
+    "id": 54,
+    "name": "Student_054",
+    "sat_score": 1140,
+    "pell_eligible": false,
+    "base_yield": 0.4393415877991789,
+    "net_price": 27896
+  },
+  {
+    "id": 55,
+    "name": "Student_055",
+    "sat_score": 1190,
+    "pell_eligible": false,
+    "base_yield": 0.42307116538790773,
+    "net_price": 21850
+  },
+  {
+    "id": 56,
+    "name": "Student_056",
+    "sat_score": 1225,
+    "pell_eligible": true,
+    "base_yield": 0.25729478992943616,
+    "net_price": 24909
+  },
+  {
+    "id": 57,
+    "name": "Student_057",
+    "sat_score": 1047,
+    "pell_eligible": true,
+    "base_yield": 0.5321375753058744,
+    "net_price": 31078
+  },
+  {
+    "id": 58,
+    "name": "Student_058",
+    "sat_score": 1123,
+    "pell_eligible": true,
+    "base_yield": 0.5284955687763176,
+    "net_price": 20563
+  },
+  {
+    "id": 59,
+    "name": "Student_059",
+    "sat_score": 1235,
+    "pell_eligible": false,
+    "base_yield": 0.5390859931267759,
+    "net_price": 29060
+  },
+  {
+    "id": 60,
+    "name": "Student_060",
+    "sat_score": 1048,
+    "pell_eligible": false,
+    "base_yield": 0.3450766015468833,
+    "net_price": 15389
+  },
+  {
+    "id": 61,
+    "name": "Student_061",
+    "sat_score": 968,
+    "pell_eligible": false,
+    "base_yield": 0.5308464322482344,
+    "net_price": 25920
+  },
+  {
+    "id": 62,
+    "name": "Student_062",
+    "sat_score": 1043,
+    "pell_eligible": false,
+    "base_yield": 0.547016155031279,
+    "net_price": 14801
+  },
+  {
+    "id": 63,
+    "name": "Student_063",
+    "sat_score": 1168,
+    "pell_eligible": false,
+    "base_yield": 0.5132119215783867,
+    "net_price": 26815
+  },
+  {
+    "id": 64,
+    "name": "Student_064",
+    "sat_score": 1279,
+    "pell_eligible": true,
+    "base_yield": 0.338077553279348,
+    "net_price": 28187
+  },
+  {
+    "id": 65,
+    "name": "Student_065",
+    "sat_score": 1276,
+    "pell_eligible": false,
+    "base_yield": 0.5101216955740312,
+    "net_price": 30264
+  },
+  {
+    "id": 66,
+    "name": "Student_066",
+    "sat_score": 1211,
+    "pell_eligible": false,
+    "base_yield": 0.4449891792333296,
+    "net_price": 26039
+  },
+  {
+    "id": 67,
+    "name": "Student_067",
+    "sat_score": 1500,
+    "pell_eligible": false,
+    "base_yield": 0.51700160254527,
+    "net_price": 18759
+  },
+  {
+    "id": 68,
+    "name": "Student_068",
+    "sat_score": 1057,
+    "pell_eligible": false,
+    "base_yield": 0.2607826821390226,
+    "net_price": 21311
+  },
+  {
+    "id": 69,
+    "name": "Student_069",
+    "sat_score": 1121,
+    "pell_eligible": false,
+    "base_yield": 0.33596237563848536,
+    "net_price": 23816
+  },
+  {
+    "id": 70,
+    "name": "Student_070",
+    "sat_score": 1093,
+    "pell_eligible": true,
+    "base_yield": 0.4066729780164413,
+    "net_price": 27399
+  },
+  {
+    "id": 71,
+    "name": "Student_071",
+    "sat_score": 1280,
+    "pell_eligible": true,
+    "base_yield": 0.4368671427457001,
+    "net_price": 13706
+  },
+  {
+    "id": 72,
+    "name": "Student_072",
+    "sat_score": 1155,
+    "pell_eligible": false,
+    "base_yield": 0.441228970449462,
+    "net_price": 26521
+  },
+  {
+    "id": 73,
+    "name": "Student_073",
+    "sat_score": 1071,
+    "pell_eligible": false,
+    "base_yield": 0.4048901044903586,
+    "net_price": 18459
+  },
+  {
+    "id": 74,
+    "name": "Student_074",
+    "sat_score": 1070,
+    "pell_eligible": true,
+    "base_yield": 0.2735369144026798,
+    "net_price": 12507
+  },
+  {
+    "id": 75,
+    "name": "Student_075",
+    "sat_score": 1252,
+    "pell_eligible": false,
+    "base_yield": 0.5007940361536618,
+    "net_price": 25919
+  },
+  {
+    "id": 76,
+    "name": "Student_076",
+    "sat_score": 1005,
+    "pell_eligible": true,
+    "base_yield": 0.32507286944937863,
+    "net_price": 22984
+  },
+  {
+    "id": 77,
+    "name": "Student_077",
+    "sat_score": 1109,
+    "pell_eligible": false,
+    "base_yield": 0.4480592130153194,
+    "net_price": 17598
+  },
+  {
+    "id": 78,
+    "name": "Student_078",
+    "sat_score": 1404,
+    "pell_eligible": true,
+    "base_yield": 0.32431929685034727,
+    "net_price": 19119
+  },
+  {
+    "id": 79,
+    "name": "Student_079",
+    "sat_score": 1273,
+    "pell_eligible": false,
+    "base_yield": 0.25431804658892676,
+    "net_price": 14321
+  },
+  {
+    "id": 80,
+    "name": "Student_080",
+    "sat_score": 1203,
+    "pell_eligible": false,
+    "base_yield": 0.27935024819530047,
+    "net_price": 21832
+  },
+  {
+    "id": 81,
+    "name": "Student_081",
+    "sat_score": 1242,
+    "pell_eligible": false,
+    "base_yield": 0.30196056097300455,
+    "net_price": 20677
+  },
+  {
+    "id": 82,
+    "name": "Student_082",
+    "sat_score": 1345,
+    "pell_eligible": false,
+    "base_yield": 0.26359120293161337,
+    "net_price": 19492
+  },
+  {
+    "id": 83,
+    "name": "Student_083",
+    "sat_score": 978,
+    "pell_eligible": false,
+    "base_yield": 0.40094087757402636,
+    "net_price": 29129
+  },
+  {
+    "id": 84,
+    "name": "Student_084",
+    "sat_score": 1032,
+    "pell_eligible": true,
+    "base_yield": 0.44272578346189473,
+    "net_price": 12530
+  },
+  {
+    "id": 85,
+    "name": "Student_085",
+    "sat_score": 1205,
+    "pell_eligible": false,
+    "base_yield": 0.5320690724274874,
+    "net_price": 23509
+  },
+  {
+    "id": 86,
+    "name": "Student_086",
+    "sat_score": 1340,
+    "pell_eligible": false,
+    "base_yield": 0.4136850367947805,
+    "net_price": 30829
+  },
+  {
+    "id": 87,
+    "name": "Student_087",
+    "sat_score": 1001,
+    "pell_eligible": true,
+    "base_yield": 0.5383571691471744,
+    "net_price": 30107
+  },
+  {
+    "id": 88,
+    "name": "Student_088",
+    "sat_score": 1183,
+    "pell_eligible": true,
+    "base_yield": 0.3456926890881284,
+    "net_price": 28897
+  },
+  {
+    "id": 89,
+    "name": "Student_089",
+    "sat_score": 1075,
+    "pell_eligible": true,
+    "base_yield": 0.49434054477668077,
+    "net_price": 17637
+  },
+  {
+    "id": 90,
+    "name": "Student_090",
+    "sat_score": 1192,
+    "pell_eligible": false,
+    "base_yield": 0.5132416040581159,
+    "net_price": 26701
+  },
+  {
+    "id": 91,
+    "name": "Student_091",
+    "sat_score": 1066,
+    "pell_eligible": false,
+    "base_yield": 0.33461037177139197,
+    "net_price": 15548
+  },
+  {
+    "id": 92,
+    "name": "Student_092",
+    "sat_score": 1239,
+    "pell_eligible": false,
+    "base_yield": 0.37378530307342794,
+    "net_price": 19440
+  },
+  {
+    "id": 93,
+    "name": "Student_093",
+    "sat_score": 1223,
+    "pell_eligible": false,
+    "base_yield": 0.3522410620759054,
+    "net_price": 30615
+  },
+  {
+    "id": 94,
+    "name": "Student_094",
+    "sat_score": 1123,
+    "pell_eligible": false,
+    "base_yield": 0.47636286222540475,
+    "net_price": 14062
+  },
+  {
+    "id": 95,
+    "name": "Student_095",
+    "sat_score": 1281,
+    "pell_eligible": false,
+    "base_yield": 0.4015757117343572,
+    "net_price": 28529
+  },
+  {
+    "id": 96,
+    "name": "Student_096",
+    "sat_score": 1231,
+    "pell_eligible": true,
+    "base_yield": 0.25325129544408953,
+    "net_price": 30107
+  },
+  {
+    "id": 97,
+    "name": "Student_097",
+    "sat_score": 1112,
+    "pell_eligible": true,
+    "base_yield": 0.34579409127712446,
+    "net_price": 31001
+  },
+  {
+    "id": 98,
+    "name": "Student_098",
+    "sat_score": 1161,
+    "pell_eligible": false,
+    "base_yield": 0.384533656593496,
+    "net_price": 17864
+  },
+  {
+    "id": 99,
+    "name": "Student_099",
+    "sat_score": 1221,
+    "pell_eligible": true,
+    "base_yield": 0.45175553682311154,
+    "net_price": 27047
+  },
+  {
+    "id": 100,
+    "name": "Student_100",
+    "sat_score": 1224,
+    "pell_eligible": true,
+    "base_yield": 0.39832609141077446,
+    "net_price": 13151
+  },
+  {
+    "id": 101,
+    "name": "Student_101",
+    "sat_score": 1225,
+    "pell_eligible": false,
+    "base_yield": 0.3824591504120131,
+    "net_price": 29754
+  },
+  {
+    "id": 102,
+    "name": "Student_102",
+    "sat_score": 1050,
+    "pell_eligible": true,
+    "base_yield": 0.4784531895152417,
+    "net_price": 24364
+  },
+  {
+    "id": 103,
+    "name": "Student_103",
+    "sat_score": 1111,
+    "pell_eligible": true,
+    "base_yield": 0.27523204183449923,
+    "net_price": 26019
+  },
+  {
+    "id": 104,
+    "name": "Student_104",
+    "sat_score": 1093,
+    "pell_eligible": true,
+    "base_yield": 0.5459918735503527,
+    "net_price": 19485
+  },
+  {
+    "id": 105,
+    "name": "Student_105",
+    "sat_score": 1177,
+    "pell_eligible": true,
+    "base_yield": 0.4938398701772508,
+    "net_price": 30944
+  },
+  {
+    "id": 106,
+    "name": "Student_106",
+    "sat_score": 1063,
+    "pell_eligible": false,
+    "base_yield": 0.41752127492074154,
+    "net_price": 20484
+  },
+  {
+    "id": 107,
+    "name": "Student_107",
+    "sat_score": 1124,
+    "pell_eligible": false,
+    "base_yield": 0.2833592446918454,
+    "net_price": 21852
+  },
+  {
+    "id": 108,
+    "name": "Student_108",
+    "sat_score": 1147,
+    "pell_eligible": true,
+    "base_yield": 0.2856453748804216,
+    "net_price": 14350
+  },
+  {
+    "id": 109,
+    "name": "Student_109",
+    "sat_score": 1115,
+    "pell_eligible": false,
+    "base_yield": 0.473813463779627,
+    "net_price": 23667
+  },
+  {
+    "id": 110,
+    "name": "Student_110",
+    "sat_score": 1136,
+    "pell_eligible": true,
+    "base_yield": 0.5105797384568381,
+    "net_price": 16471
+  },
+  {
+    "id": 111,
+    "name": "Student_111",
+    "sat_score": 1198,
+    "pell_eligible": false,
+    "base_yield": 0.2536463424069449,
+    "net_price": 31397
+  },
+  {
+    "id": 112,
+    "name": "Student_112",
+    "sat_score": 1176,
+    "pell_eligible": true,
+    "base_yield": 0.4161562853203963,
+    "net_price": 31386
+  },
+  {
+    "id": 113,
+    "name": "Student_113",
+    "sat_score": 1151,
+    "pell_eligible": false,
+    "base_yield": 0.4388195914405788,
+    "net_price": 25914
+  },
+  {
+    "id": 114,
+    "name": "Student_114",
+    "sat_score": 1408,
+    "pell_eligible": false,
+    "base_yield": 0.5203474031472968,
+    "net_price": 12908
+  },
+  {
+    "id": 115,
+    "name": "Student_115",
+    "sat_score": 1057,
+    "pell_eligible": true,
+    "base_yield": 0.5351234452229676,
+    "net_price": 29805
+  },
+  {
+    "id": 116,
+    "name": "Student_116",
+    "sat_score": 1412,
+    "pell_eligible": true,
+    "base_yield": 0.3064363479171284,
+    "net_price": 21273
+  },
+  {
+    "id": 117,
+    "name": "Student_117",
+    "sat_score": 1053,
+    "pell_eligible": true,
+    "base_yield": 0.4250968335552616,
+    "net_price": 13554
+  },
+  {
+    "id": 118,
+    "name": "Student_118",
+    "sat_score": 1191,
+    "pell_eligible": true,
+    "base_yield": 0.49413850591208464,
+    "net_price": 25694
+  },
+  {
+    "id": 119,
+    "name": "Student_119",
+    "sat_score": 1375,
+    "pell_eligible": true,
+    "base_yield": 0.5232781553481528,
+    "net_price": 28450
+  },
+  {
+    "id": 120,
+    "name": "Student_120",
+    "sat_score": 991,
+    "pell_eligible": false,
+    "base_yield": 0.5098191668501225,
+    "net_price": 12904
+  },
+  {
+    "id": 121,
+    "name": "Student_121",
+    "sat_score": 1369,
+    "pell_eligible": true,
+    "base_yield": 0.3629390100634149,
+    "net_price": 28211
+  },
+  {
+    "id": 122,
+    "name": "Student_122",
+    "sat_score": 944,
+    "pell_eligible": false,
+    "base_yield": 0.5026356769407127,
+    "net_price": 28766
+  },
+  {
+    "id": 123,
+    "name": "Student_123",
+    "sat_score": 1312,
+    "pell_eligible": false,
+    "base_yield": 0.3744458507012996,
+    "net_price": 17468
+  },
+  {
+    "id": 124,
+    "name": "Student_124",
+    "sat_score": 1150,
+    "pell_eligible": false,
+    "base_yield": 0.5334297189647285,
+    "net_price": 28992
+  },
+  {
+    "id": 125,
+    "name": "Student_125",
+    "sat_score": 1155,
+    "pell_eligible": true,
+    "base_yield": 0.3851632405930281,
+    "net_price": 14583
+  },
+  {
+    "id": 126,
+    "name": "Student_126",
+    "sat_score": 1164,
+    "pell_eligible": true,
+    "base_yield": 0.45151020532175706,
+    "net_price": 24362
+  },
+  {
+    "id": 127,
+    "name": "Student_127",
+    "sat_score": 1211,
+    "pell_eligible": true,
+    "base_yield": 0.2840672776598887,
+    "net_price": 25431
+  },
+  {
+    "id": 128,
+    "name": "Student_128",
+    "sat_score": 1336,
+    "pell_eligible": false,
+    "base_yield": 0.5056544500955621,
+    "net_price": 23038
+  },
+  {
+    "id": 129,
+    "name": "Student_129",
+    "sat_score": 1163,
+    "pell_eligible": false,
+    "base_yield": 0.5129960807975036,
+    "net_price": 20069
+  },
+  {
+    "id": 130,
+    "name": "Student_130",
+    "sat_score": 1227,
+    "pell_eligible": false,
+    "base_yield": 0.31388924845267324,
+    "net_price": 14727
+  },
+  {
+    "id": 131,
+    "name": "Student_131",
+    "sat_score": 1314,
+    "pell_eligible": true,
+    "base_yield": 0.3551762676419791,
+    "net_price": 23798
+  },
+  {
+    "id": 132,
+    "name": "Student_132",
+    "sat_score": 1008,
+    "pell_eligible": false,
+    "base_yield": 0.3544766401069901,
+    "net_price": 22279
+  },
+  {
+    "id": 133,
+    "name": "Student_133",
+    "sat_score": 905,
+    "pell_eligible": false,
+    "base_yield": 0.3689628346963811,
+    "net_price": 24441
+  },
+  {
+    "id": 134,
+    "name": "Student_134",
+    "sat_score": 945,
+    "pell_eligible": false,
+    "base_yield": 0.5440097725856432,
+    "net_price": 21852
+  },
+  {
+    "id": 135,
+    "name": "Student_135",
+    "sat_score": 1143,
+    "pell_eligible": true,
+    "base_yield": 0.4400202562950178,
+    "net_price": 16802
+  },
+  {
+    "id": 136,
+    "name": "Student_136",
+    "sat_score": 1193,
+    "pell_eligible": true,
+    "base_yield": 0.353700184997159,
+    "net_price": 29935
+  },
+  {
+    "id": 137,
+    "name": "Student_137",
+    "sat_score": 1037,
+    "pell_eligible": false,
+    "base_yield": 0.45026732155630816,
+    "net_price": 15446
+  },
+  {
+    "id": 138,
+    "name": "Student_138",
+    "sat_score": 1086,
+    "pell_eligible": true,
+    "base_yield": 0.27661076012711666,
+    "net_price": 14412
+  },
+  {
+    "id": 139,
+    "name": "Student_139",
+    "sat_score": 1054,
+    "pell_eligible": false,
+    "base_yield": 0.31190011552173774,
+    "net_price": 19285
+  },
+  {
+    "id": 140,
+    "name": "Student_140",
+    "sat_score": 1385,
+    "pell_eligible": true,
+    "base_yield": 0.4898231196727128,
+    "net_price": 24558
+  },
+  {
+    "id": 141,
+    "name": "Student_141",
+    "sat_score": 1154,
+    "pell_eligible": true,
+    "base_yield": 0.5120735872320332,
+    "net_price": 30417
+  },
+  {
+    "id": 142,
+    "name": "Student_142",
+    "sat_score": 1136,
+    "pell_eligible": false,
+    "base_yield": 0.4744779071150975,
+    "net_price": 15690
+  },
+  {
+    "id": 143,
+    "name": "Student_143",
+    "sat_score": 1123,
+    "pell_eligible": true,
+    "base_yield": 0.36114163083741463,
+    "net_price": 21690
+  },
+  {
+    "id": 144,
+    "name": "Student_144",
+    "sat_score": 968,
+    "pell_eligible": false,
+    "base_yield": 0.474241281440127,
+    "net_price": 12733
+  },
+  {
+    "id": 145,
+    "name": "Student_145",
+    "sat_score": 1314,
+    "pell_eligible": true,
+    "base_yield": 0.46400487576536575,
+    "net_price": 29904
+  },
+  {
+    "id": 146,
+    "name": "Student_146",
+    "sat_score": 1500,
+    "pell_eligible": true,
+    "base_yield": 0.3842237100470364,
+    "net_price": 22652
+  },
+  {
+    "id": 147,
+    "name": "Student_147",
+    "sat_score": 1284,
+    "pell_eligible": true,
+    "base_yield": 0.3307729692848143,
+    "net_price": 19545
+  },
+  {
+    "id": 148,
+    "name": "Student_148",
+    "sat_score": 1072,
+    "pell_eligible": true,
+    "base_yield": 0.5171581842219686,
+    "net_price": 23871
+  },
+  {
+    "id": 149,
+    "name": "Student_149",
+    "sat_score": 1020,
+    "pell_eligible": false,
+    "base_yield": 0.4867513715822015,
+    "net_price": 21968
+  }
+]

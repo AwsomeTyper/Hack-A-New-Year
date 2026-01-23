@@ -1,0 +1,49 @@
+{
+  "shap": {
+    "expected_value": 0.7385278940200806,
+    "feature_importance": [
+      {
+        "feature": "pell_rate",
+        "importance": 0.05313096567988396
+      },
+      {
+        "feature": "student_size",
+        "importance": 0.023660894483327866
+      },
+      {
+        "feature": "admission_rate",
+        "importance": 0.02198626473546028
+      },
+      {
+        "feature": "net_price_low_income",
+        "importance": 0.01732168346643448
+      },
+      {
+        "feature": "geographic_isolation",
+        "importance": 0.015298462472856045
+      },
+      {
+        "feature": "median_debt",
+        "importance": 0.009777115657925606
+      },
+      {
+        "feature": "value_add_ratio",
+        "importance": 0.009552004747092724
+      }
+    ]
+  },
+  "fairness": {
+    "status": "skipped",
+    "reason": "fairlearn not installed"
+  },
+  "features": [
+    "net_price_low_income",
+    "median_debt",
+    "admission_rate",
+    "pell_rate",
+    "geographic_isolation",
+    "student_size",
+    "value_add_ratio"
+  ],
+  "target": "retention_rate"
+}
