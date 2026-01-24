@@ -140,6 +140,6 @@ Project Aegis provides a **protective shield** for universities:
 
 # Questions?
 
-**Data Source**: [Data.gov College Scorecard](https://collegescorecard.ed.gov/data/)
+**Data Source**: [Data.gov College Scorecard](https://collegescorecard.ed.gov/data)
 
 _Built with ♥ for the CGI Business Analytics Competition_
