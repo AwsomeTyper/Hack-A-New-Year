@@ -15,8 +15,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Project Aegis | University Resilience Suite",
-  description: "Strategic analytics platform addressing the 2026 Demographic Cliff in higher education",
+  title: "Project Aegis | Pell Grant ROI Analytics",
+  description: "Transforming federal Pell Grant investment from access vouchers into completion investments",
 };
 
 export default function RootLayout({
@@ -25,10 +25,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
         style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif' }}
+        suppressHydrationWarning
       >
         {children}
       </body>

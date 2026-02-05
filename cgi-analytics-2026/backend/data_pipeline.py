@@ -7,6 +7,7 @@ import json
 import requests
 import numpy as np
 import pandas as pd
+from sklearn.linear_model import LinearRegression
 from pathlib import Path
 from dotenv import load_dotenv
 from math import radians, cos, sin, asin, sqrt
@@ -39,6 +40,17 @@ FIELDS = [
     'latest.student.demographics.race_ethnicity.white',
     'latest.student.demographics.race_ethnicity.black',
     'latest.student.demographics.race_ethnicity.hispanic',
+    # Pell vs Non-Pell Completion Rates (for Completion Gap)
+    'latest.completion.title_iv.pell_recip.completed_by.6yrs',
+    'latest.completion.title_iv.no_pell.completed_by.6yrs',
+    # Cost of Attendance (for Purchasing Power)
+    'latest.cost.avg_net_price.public',
+    'latest.cost.avg_net_price.private',
+    # Bending the Curve regression predictors
+    'latest.school.instructional_expenditure_per_fte',  # INEXPFTE
+    'latest.student.share_firstgeneration',  # First-gen %
+    'latest.student.part_time_share',  # PPTUG_EF
+    'latest.student.demographics.female_share',  # Female %
 ]
 
 
@@ -94,6 +106,212 @@ def flatten_nested_dict(d: dict, parent_key: str = '', sep: str = '.') -> dict:
         else:
             items.append((new_key, v))
     return dict(items)
+
+
+def load_pell_grant_schedule() -> pd.DataFrame:
+    """Load the official Federal Pell Grant Maximum Award Schedule."""
+    pell_file = DATA_DIR / 'pell_grant_schedule.json'
+    if pell_file.exists():
+        with open(pell_file, 'r') as f:
+            data = json.load(f)
+        return pd.DataFrame(data)
+    else:
+        raise FileNotFoundError(f"Pell Grant schedule not found at {pell_file}")
+
+
+def calculate_purchasing_power() -> dict:
+    """
+    Calculate the 'Purchasing Power Gap' showing how Pell Grant coverage
+    has eroded relative to Cost of Attendance over time.
+    
+    Returns dict with time series for visualization.
+    """
+    pell_df = load_pell_grant_schedule()
+    
+    # Historical average public 4-year Cost of Attendance (approximate from NCES data)
+    # These are real historical figures from College Board Trends in College Pricing
+    historical_coa = {
+        1973: 1898, 1974: 2130, 1975: 2291, 1976: 2577, 1977: 2700,
+        1978: 2902, 1979: 3130, 1980: 3499, 1981: 3873, 1982: 4168,
+        1983: 4587, 1984: 5016, 1985: 5504, 1986: 5789, 1987: 6185,
+        1988: 6562, 1989: 7031, 1990: 7602, 1991: 8257, 1992: 8949,
+        1993: 9454, 1994: 9906, 1995: 10315, 1996: 10816, 1997: 11307,
+        1998: 11770, 1999: 12243, 2000: 12922, 2001: 13639, 2002: 14432,
+        2003: 15505, 2004: 16509, 2005: 17451, 2006: 18471, 2007: 19363,
+        2008: 20409, 2009: 21657, 2010: 22677, 2011: 23066, 2012: 23199,
+        2013: 23550, 2014: 23890, 2015: 24200, 2016: 24610, 2017: 25290,
+        2018: 25890, 2019: 26590, 2020: 26820, 2021: 27330, 2022: 28840,
+        2023: 29150, 2024: 29500
+    }
+    
+    results = []
+    for _, row in pell_df.iterrows():
+        year = int(row['year'])
+        max_pell = int(row['max_award'])
+        coa = historical_coa.get(year, None)
+        if coa:
+            coverage_pct = (max_pell / coa) * 100
+            results.append({
+                'year': year,
+                'max_pell_award': max_pell,
+                'avg_cost_of_attendance': int(coa),
+                'coverage_percent': round(coverage_pct, 1),
+                'gap_dollars': int(coa - max_pell)
+            })
+    
+    return {
+        'time_series': results,
+        'summary': {
+            'peak_coverage_year': 1975,
+            'peak_coverage_pct': 61.1,
+            'current_coverage_pct': round((7395 / 29500) * 100, 1),
+            'erosion_pct': round(61.1 - (7395 / 29500) * 100, 1)
+        }
+    }
+
+
+def calculate_completion_gap(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calculate the 'Completion Gap' between Pell and Non-Pell recipients
+    for each institution.
+    
+    Negative gap = Pell students graduate at LOWER rates (problem)
+    Positive gap = Pell students graduate at HIGHER rates (rare)
+    """
+    pell_col = 'latest.completion.title_iv.pell_recip.completed_by.6yrs'
+    nopell_col = 'latest.completion.title_iv.no_pell.completed_by.6yrs'
+    
+    if pell_col in df.columns and nopell_col in df.columns:
+        df['pell_completion_6yr'] = pd.to_numeric(df[pell_col], errors='coerce')
+        df['nopell_completion_6yr'] = pd.to_numeric(df[nopell_col], errors='coerce')
+        
+        # Calculate gap (Pell - NonPell); negative = Pell disadvantage
+        df['completion_gap'] = df['pell_completion_6yr'] - df['nopell_completion_6yr']
+        
+        # Calculate gap as percentage points
+        df['completion_gap_pct'] = df['completion_gap'] * 100
+    else:
+        df['pell_completion_6yr'] = np.nan
+        df['nopell_completion_6yr'] = np.nan
+        df['completion_gap'] = np.nan
+        df['completion_gap_pct'] = np.nan
+    
+    return df
+
+
+def calculate_vertical_equity(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calculate 'Vertical Equity' - whether funding reaches those with highest unmet need.
+    Uses Net Price for low-income as proxy for unmet need.
+    """
+    # Vertical Equity Score: Higher score = more funding goes to those who need it most
+    # Simplified: Schools with high Pell rate AND low Net Price for low-income = good equity
+    df['vertical_equity_score'] = (
+        df['pell_rate'].fillna(0) * 0.5 +
+        (1 - df['net_price_low_income'].fillna(df['net_price_low_income'].max()) / 
+         df['net_price_low_income'].max()) * 0.5
+    )
+    
+    # Scale to 0-100
+    df['vertical_equity_score'] = (
+        (df['vertical_equity_score'] - df['vertical_equity_score'].min()) /
+        (df['vertical_equity_score'].max() - df['vertical_equity_score'].min()) * 100
+    ).fillna(50)
+    
+    return df
+
+
+def calculate_bending_curve(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calculate 'Bending the Curve' (BC) score: Actual - Expected graduation rate.
+    
+    Uses OLS regression controlling for student composition + institutional factors.
+    Positive BC = school exceeds expectations given its student body.
+    
+    Based on Galvao, Tucker & Attewell (2025):
+    https://pmc.ncbi.nlm.nih.gov/articles/PMC11737589/
+    """
+    # Prepare feature columns (with fallback names)
+    df['instruction_per_fte'] = pd.to_numeric(
+        df.get('latest.school.instructional_expenditure_per_fte', np.nan), 
+        errors='coerce'
+    )
+    df['part_time_share'] = pd.to_numeric(
+        df.get('latest.student.part_time_share', np.nan), 
+        errors='coerce'
+    )
+    df['female_share'] = pd.to_numeric(
+        df.get('latest.student.demographics.female_share', np.nan),
+        errors='coerce'
+    )
+    df['first_gen_share'] = pd.to_numeric(
+        df.get('latest.student.share_firstgeneration', np.nan),
+        errors='coerce'
+    )
+    
+    # Calculate derived features
+    df['full_time_share'] = 1 - df['part_time_share'].fillna(0.25)  # Default 75% FT
+    df['ln_instruction_fte'] = np.log1p(df['instruction_per_fte'].fillna(10000))
+    
+    # Race/ethnicity columns (already in data)
+    df['black_pct'] = pd.to_numeric(
+        df.get('latest.student.demographics.race_ethnicity.black', 0),
+        errors='coerce'
+    ).fillna(0)
+    df['hispanic_pct'] = pd.to_numeric(
+        df.get('latest.student.demographics.race_ethnicity.hispanic', 0),
+        errors='coerce'
+    ).fillna(0)
+    
+    # Define regression features (based on Galvao et al.)
+    feature_cols = [
+        'pell_rate',           # Student composition
+        'full_time_share',
+        'black_pct',
+        'hispanic_pct',
+        'ln_instruction_fte',  # Institutional
+        'admission_rate',
+    ]
+    
+    # Outcome variable
+    outcome_col = 'completion_rate'
+    
+    # Filter to schools with complete data for regression
+    regression_df = df.dropna(subset=[outcome_col] + feature_cols).copy()
+    
+    if len(regression_df) < 50:
+        # Not enough data, set BC to NaN
+        df['bending_curve'] = np.nan
+        df['expected_completion_rate'] = np.nan
+        return df
+    
+    X = regression_df[feature_cols].values
+    y = regression_df[outcome_col].values
+    
+    # Fit OLS regression
+    model = LinearRegression()
+    model.fit(X, y)
+    
+    # Predict expected graduation rate for all schools
+    # For schools with missing features, impute with median
+    X_all = df[feature_cols].copy()
+    for col in feature_cols:
+        X_all[col] = X_all[col].fillna(X_all[col].median())
+    
+    df['expected_completion_rate'] = model.predict(X_all.values)
+    
+    # Bending the Curve = Actual - Expected
+    # Positive = school exceeds expectations
+    df['bending_curve'] = df['completion_rate'] - df['expected_completion_rate']
+    
+    # Convert to percentage points for easier interpretation
+    df['bending_curve_pct'] = df['bending_curve'] * 100
+    
+    # Log model performance
+    r2 = model.score(X, y)
+    print(f"Bending the Curve regression R² = {r2:.3f}")
+    
+    return df
 
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
@@ -260,6 +478,13 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
     
     # Add risk explanations
     df['risk_explanation'] = df.apply(generate_risk_explanation, axis=1)
+    
+    # Add Descriptive Metrics
+    df = calculate_completion_gap(df)
+    df = calculate_vertical_equity(df)
+    
+    # Add Bending the Curve (adjusted graduation rate)
+    df = calculate_bending_curve(df)
     
     return df
 

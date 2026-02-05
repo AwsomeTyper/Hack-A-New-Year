@@ -1,0 +1,1264 @@
+INFO:     Started server process [84487]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:62067 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62067 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62069 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62511 - "GET /api/metrics/purchasing-power HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62513 - "GET /api/metrics/completion-gap?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62515 - "GET /api/predict/viability HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62517 - "GET /api/predict/elasticity?grant_change=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62518 - "GET /api/metrics/equity-performance?limit=400 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62518 - "GET /api/optimize/enrollment?budget=50000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62517 - "GET /api/optimize/enrollment?budget=50000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62515 - "GET /api/optimize/enrollment?budget=50000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62518 - "GET /api/optimize/enrollment?budget=50000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62523 - "GET /api/metrics/equity-performance?limit=5000&instructional_spend_min=1000 HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'latest.academics.program_percentage.education'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 410, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1138, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/main.py", line 369, in get_equity_performance
+    scatter_df = scatter_df[scatter_df['latest.academics.program_percentage.education'] >= instructional_spend_min]
+                            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: 'latest.academics.program_percentage.education'
+INFO:     127.0.0.1:62525 - "GET /api/metrics/equity-performance?limit=5000&instructional_spend_min=19500 HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'latest.academics.program_percentage.education'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 410, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1138, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/main.py", line 369, in get_equity_performance
+    scatter_df = scatter_df[scatter_df['latest.academics.program_percentage.education'] >= instructional_spend_min]
+                            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: 'latest.academics.program_percentage.education'
+INFO:     127.0.0.1:62529 - "GET /api/metrics/equity-performance?limit=5000&instructional_spend_min=19000 HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'latest.academics.program_percentage.education'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 410, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1138, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/main.py", line 369, in get_equity_performance
+    scatter_df = scatter_df[scatter_df['latest.academics.program_percentage.education'] >= instructional_spend_min]
+                            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: 'latest.academics.program_percentage.education'
+INFO:     127.0.0.1:62531 - "GET /api/metrics/equity-performance?limit=5000&instructional_spend_min=31000 HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'latest.academics.program_percentage.education'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 410, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1138, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/main.py", line 369, in get_equity_performance
+    scatter_df = scatter_df[scatter_df['latest.academics.program_percentage.education'] >= instructional_spend_min]
+                            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: 'latest.academics.program_percentage.education'
+INFO:     127.0.0.1:62533 - "GET /api/metrics/equity-performance?limit=5000&instructional_spend_min=33500 HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'latest.academics.program_percentage.education'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 410, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1138, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/main.py", line 369, in get_equity_performance
+    scatter_df = scatter_df[scatter_df['latest.academics.program_percentage.education'] >= instructional_spend_min]
+                            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: 'latest.academics.program_percentage.education'
+INFO:     127.0.0.1:62535 - "GET /api/metrics/equity-performance?limit=5000&instructional_spend_min=33000 HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'latest.academics.program_percentage.education'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 410, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1138, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/main.py", line 369, in get_equity_performance
+    scatter_df = scatter_df[scatter_df['latest.academics.program_percentage.education'] >= instructional_spend_min]
+                            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: 'latest.academics.program_percentage.education'
+INFO:     127.0.0.1:62537 - "GET /api/metrics/equity-performance?limit=5000&instructional_spend_min=31500 HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'latest.academics.program_percentage.education'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 410, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1138, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/main.py", line 369, in get_equity_performance
+    scatter_df = scatter_df[scatter_df['latest.academics.program_percentage.education'] >= instructional_spend_min]
+                            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: 'latest.academics.program_percentage.education'
+INFO:     127.0.0.1:62539 - "GET /api/metrics/equity-performance?limit=5000&instructional_spend_min=31000 HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'latest.academics.program_percentage.education'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 410, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1138, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/main.py", line 369, in get_equity_performance
+    scatter_df = scatter_df[scatter_df['latest.academics.program_percentage.education'] >= instructional_spend_min]
+                            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: 'latest.academics.program_percentage.education'
+INFO:     127.0.0.1:62541 - "GET /api/metrics/equity-performance?limit=5000&instructional_spend_min=30000 HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'latest.academics.program_percentage.education'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 410, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1138, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/main.py", line 369, in get_equity_performance
+    scatter_df = scatter_df[scatter_df['latest.academics.program_percentage.education'] >= instructional_spend_min]
+                            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: 'latest.academics.program_percentage.education'
+INFO:     127.0.0.1:62544 - "GET /api/metrics/equity-performance?limit=5000&instructional_spend_min=28500 HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'latest.academics.program_percentage.education'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 410, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1138, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/main.py", line 369, in get_equity_performance
+    scatter_df = scatter_df[scatter_df['latest.academics.program_percentage.education'] >= instructional_spend_min]
+                            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: 'latest.academics.program_percentage.education'
+INFO:     127.0.0.1:62546 - "GET /api/metrics/equity-performance?limit=5000&instructional_spend_min=24000 HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'latest.academics.program_percentage.education'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 410, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1138, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/main.py", line 369, in get_equity_performance
+    scatter_df = scatter_df[scatter_df['latest.academics.program_percentage.education'] >= instructional_spend_min]
+                            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: 'latest.academics.program_percentage.education'
+INFO:     127.0.0.1:62548 - "GET /api/metrics/equity-performance?limit=5000&instructional_spend_min=18000 HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'latest.academics.program_percentage.education'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 410, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1138, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/main.py", line 369, in get_equity_performance
+    scatter_df = scatter_df[scatter_df['latest.academics.program_percentage.education'] >= instructional_spend_min]
+                            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: 'latest.academics.program_percentage.education'
+INFO:     127.0.0.1:62550 - "GET /api/metrics/equity-performance?limit=5000&instructional_spend_min=12000 HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'latest.academics.program_percentage.education'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 410, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1138, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/main.py", line 369, in get_equity_performance
+    scatter_df = scatter_df[scatter_df['latest.academics.program_percentage.education'] >= instructional_spend_min]
+                            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: 'latest.academics.program_percentage.education'
+INFO:     127.0.0.1:62552 - "GET /api/metrics/equity-performance?limit=5000&instructional_spend_min=5500 HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'latest.academics.program_percentage.education'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 410, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1138, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/main.py", line 369, in get_equity_performance
+    scatter_df = scatter_df[scatter_df['latest.academics.program_percentage.education'] >= instructional_spend_min]
+                            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: 'latest.academics.program_percentage.education'
+INFO:     127.0.0.1:62554 - "GET /api/metrics/equity-performance?limit=5000&instructional_spend_min=1000 HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: 'latest.academics.program_percentage.education'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py", line 410, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/applications.py", line 1138, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/main.py", line 369, in get_equity_performance
+    scatter_df = scatter_df[scatter_df['latest.academics.program_percentage.education'] >= instructional_spend_min]
+                            ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: 'latest.academics.program_percentage.education'
+INFO:     127.0.0.1:62646 - "GET /api/metrics/equity-performance?limit=5000&ownerships=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62649 - "GET /api/metrics/equity-performance?limit=5000&ownerships=1%2C2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62649 - "GET /api/metrics/equity-performance?limit=5000&ownerships=1%2C2%2C3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62659 - "GET /api/metrics/equity-performance?limit=5000&quadrant=equity_champion HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62752 - "GET /api/metrics/equity-performance?limit=5000&quadrant=value_add_focus HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62755 - "GET /api/metrics/equity-performance?limit=5000&ownerships=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62758 - "GET /api/metrics/equity-performance?limit=5000&college_types=-2&ownerships=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62760 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.01 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62760 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.21 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62760 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.28 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62760 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.33 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62760 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.4 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62760 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.51 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62760 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.71 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62760 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.81 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62760 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.8 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.82 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.83 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.84 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.85 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.86 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.87 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.88 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.89 HTTP/1.1" 200 OK
+/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3065: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3066: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.9 HTTP/1.1" 200 OK
+/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3065: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3066: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.91 HTTP/1.1" 200 OK
+/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3065: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3066: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.92 HTTP/1.1" 200 OK
+/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3065: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3066: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.93 HTTP/1.1" 200 OK
+/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3065: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3066: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.94 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.95 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.96 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.98 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.99 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.99 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.97 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.96 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.97 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.99 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62765 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62861 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.98 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62861 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.95 HTTP/1.1" 200 OK
+/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3065: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3066: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+INFO:     127.0.0.1:62861 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.93 HTTP/1.1" 200 OK
+/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3065: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3066: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+INFO:     127.0.0.1:62861 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.91 HTTP/1.1" 200 OK
+/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3065: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[:, None]
+/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend/venv/lib/python3.13/site-packages/numpy/lib/_function_base_impl.py:3066: RuntimeWarning: invalid value encountered in divide
+  c /= stddev[None, :]
+INFO:     127.0.0.1:62861 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62861 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.87 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62861 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.85 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62861 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.82 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62861 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.79 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62861 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.73 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62861 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.66 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62861 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.6 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62861 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62861 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.35 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62861 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62861 - "GET /api/metrics/equity-performance?limit=5000&pell_rate_min=0.08 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62865 - "GET /api/metrics/equity-performance?limit=5000&ownerships=1 HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [84487]
