@@ -498,8 +498,8 @@ async def get_equity_performance(
         bending = safe_float(row.get('bending_curve_pct'))
         
         # KPIs - positive values are generally better
-        retention = safe_float(row.get('retention_rate_ft'))
-        instr_spend = safe_float(row.get('instructional_spend'))
+        retention = safe_float(row.get('retention_rate'))
+        instr_spend = safe_float(row.get('instruction_per_fte'))
         first_gen = safe_float(row.get('first_gen_share'))
         pell_completion = safe_float(row.get('pell_completion_rate'))
         non_pell_completion = safe_float(row.get('non_pell_completion_rate'))
@@ -526,6 +526,12 @@ async def get_equity_performance(
             "rank": int(row.get('rank', 0)),
             "composite_score": safe_float(row.get('composite_score')),
             "median_earnings": safe_float(row.get('earnings_4yr')),
+            # Bias-adjusted fields (NEW)
+            "transfer_adjusted_completion": safe_float(row.get('transfer_adjusted_completion')),
+            "earnings_10yr": safe_float(row.get('earnings_10yr')),
+            "earnings_col_adjusted": safe_float(row.get('earnings_col_adjusted')),
+            "earnings_value_add": safe_float(row.get('earnings_value_add')),
+            "earnings_value_add_pct": safe_float(row.get('earnings_value_add_pct')),
         })
     
     # Get available states for filter dropdown (from unfiltered data)

@@ -9,6 +9,7 @@ import {
   ResponsiveContainer, Cell, ReferenceLine, ZAxis
 } from 'recharts';
 import { TrendingDown, AlertTriangle, Building2, Award, Filter, Target } from 'lucide-react';
+import { RangeSlider } from '@/components/ui/RangeSlider';
 
 interface PurchasingPowerPoint {
   year: number;
@@ -114,7 +115,7 @@ export default function EvidenceSection({
   const [selectedOwnerships, setSelectedOwnerships] = useState<number[]>([]);
   // Range filter states
   const [pellRateRange, setPellRateRange] = useState<[number, number]>([0, 100]);
-  const [studentSizeRange, setStudentSizeRange] = useState<[number, number]>([0, 100000]);
+  const [studentSizeRange, setStudentSizeRange] = useState<[number, number]>([1000, 100000]);
   const [instructionalSpendRange, setInstructionalSpendRange] = useState<[number, number]>([0, 50000]);
   // X-axis metric selection
   const [xAxisMetric, setXAxisMetric] = useState<string>('completion_gap');
@@ -191,12 +192,13 @@ export default function EvidenceSection({
   }, [equityPerformanceData]);
   
   // X-axis configuration based on selected metric
+  // X-axis config (selectable metric)
   const xAxisConfig = useMemo(() => {
     const configs: Record<string, { dataKey: string; label: string; formatter: (v: number) => string; domain: [number, number] }> = {
       completion_gap: {
         dataKey: 'pell_gap_pct',
         label: 'Pell Gap (Equity →)',
-        formatter: (v) => `${v}%`,
+        formatter: (v) => `${v?.toFixed(0) || 0}%`,
         domain: [-40, 40]
       },
       pell_rate: {
@@ -213,13 +215,25 @@ export default function EvidenceSection({
       },
       instructional_spend: {
         dataKey: 'instructional_spend',
-        label: 'Instructional $/Student (Investment →)',
+        label: 'Instructional $/Student →',
         formatter: (v) => `$${(v / 1000).toFixed(0)}k`,
         domain: [0, 50000]
       },
       median_earnings: {
         dataKey: 'median_earnings',
-        label: 'Median Earnings 10yr (Outcomes →)',
+        label: 'Median Earnings 10yr →',
+        formatter: (v) => `$${(v / 1000).toFixed(0)}k`,
+        domain: [20000, 100000]
+      },
+      earnings_value_add: {
+        dataKey: 'earnings_value_add_pct',
+        label: 'Earnings Value-Add % →',
+        formatter: (v) => `${v > 0 ? '+' : ''}${v?.toFixed(0) || 0}%`,
+        domain: [-50, 50]
+      },
+      earnings_col_adjusted: {
+        dataKey: 'earnings_col_adjusted',
+        label: 'COL-Adjusted Earnings →',
         formatter: (v) => `$${(v / 1000).toFixed(0)}k`,
         domain: [20000, 100000]
       }
@@ -556,6 +570,8 @@ export default function EvidenceSection({
                     <option value="retention_rate">Retention Rate</option>
                     <option value="instructional_spend">Instructional $/Student</option>
                     <option value="median_earnings">Median Earnings (10yr)</option>
+                    <option value="earnings_value_add">📊 Earnings Value-Add (Risk-Adjusted)</option>
+                    <option value="earnings_col_adjusted">💰 COL-Adjusted Earnings</option>
                   </select>
                 </div>
                 
@@ -639,88 +655,39 @@ export default function EvidenceSection({
               </div>
               
               {/* Range Sliders Row */}
-              <div className="grid grid-cols-3 gap-4 mb-3">
+              <div className="grid grid-cols-3 gap-6 mb-3">
                 {/* Pell Rate Range */}
-                <div className="space-y-1">
-                  <label className="text-xs text-[var(--text-secondary)] flex justify-between">
-                    <span>Pell Rate</span>
-                    <span>{pellRateRange[0]}% – {pellRateRange[1]}%</span>
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={pellRateRange[0]}
-                      onChange={(e) => setPellRateRange([parseInt(e.target.value), pellRateRange[1]])}
-                      className="flex-1 h-1 accent-purple-500"
-                    />
-                    <input
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={pellRateRange[1]}
-                      onChange={(e) => setPellRateRange([pellRateRange[0], parseInt(e.target.value)])}
-                      className="flex-1 h-1 accent-purple-500"
-                    />
-                  </div>
-                </div>
+                <RangeSlider
+                  label="Pell Rate (%)"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={pellRateRange}
+                  onChange={setPellRateRange}
+                  accentColor="purple"
+                />
                 
                 {/* Student Size Range */}
-                <div className="space-y-1">
-                  <label className="text-xs text-[var(--text-secondary)] flex justify-between">
-                    <span>Students</span>
-                    <span>{studentSizeRange[0].toLocaleString()} – {studentSizeRange[1].toLocaleString()}</span>
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      type="range"
-                      min="0"
-                      max="100000"
-                      step="1000"
-                      value={studentSizeRange[0]}
-                      onChange={(e) => setStudentSizeRange([parseInt(e.target.value), studentSizeRange[1]])}
-                      className="flex-1 h-1 accent-teal-500"
-                    />
-                    <input
-                      type="range"
-                      min="0"
-                      max="100000"
-                      step="1000"
-                      value={studentSizeRange[1]}
-                      onChange={(e) => setStudentSizeRange([studentSizeRange[0], parseInt(e.target.value)])}
-                      className="flex-1 h-1 accent-teal-500"
-                    />
-                  </div>
-                </div>
+                <RangeSlider
+                  label="Students"
+                  min={0}
+                  max={100000}
+                  step={500}
+                  value={studentSizeRange}
+                  onChange={setStudentSizeRange}
+                  accentColor="teal"
+                />
                 
                 {/* Instructional Spend Range */}
-                <div className="space-y-1">
-                  <label className="text-xs text-[var(--text-secondary)] flex justify-between">
-                    <span>Instr. $/Student</span>
-                    <span>${instructionalSpendRange[0].toLocaleString()} – ${instructionalSpendRange[1].toLocaleString()}</span>
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      type="range"
-                      min="0"
-                      max="50000"
-                      step="500"
-                      value={instructionalSpendRange[0]}
-                      onChange={(e) => setInstructionalSpendRange([parseInt(e.target.value), instructionalSpendRange[1]])}
-                      className="flex-1 h-1 accent-amber-500"
-                    />
-                    <input
-                      type="range"
-                      min="0"
-                      max="50000"
-                      step="500"
-                      value={instructionalSpendRange[1]}
-                      onChange={(e) => setInstructionalSpendRange([instructionalSpendRange[0], parseInt(e.target.value)])}
-                      className="flex-1 h-1 accent-amber-500"
-                    />
-                  </div>
-                </div>
+                <RangeSlider
+                  label="Instr. $/Student"
+                  min={0}
+                  max={50000}
+                  step={500}
+                  value={instructionalSpendRange}
+                  onChange={setInstructionalSpendRange}
+                  accentColor="amber"
+                />
               </div>
               
               {/* Active Filter Badges */}
@@ -863,11 +830,11 @@ export default function EvidenceSection({
                       dataKey="bending_curve_pct" 
                       name="Bending Curve"
                       domain={axisDomains.y}
-                      tickFormatter={(v) => `${v}%`}
+                      tickFormatter={(v) => `${v?.toFixed(0) || 0}%`}
                       stroke="rgba(255,255,255,0.3)"
                       tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 11 }}
                       label={{ 
-                        value: 'Bending the Curve (Value-Add →)', 
+                        value: 'Bending the Curve (Value-Add ↑)', 
                         angle: -90, 
                         position: 'insideLeft', 
                         fill: 'rgba(255,255,255,0.5)',

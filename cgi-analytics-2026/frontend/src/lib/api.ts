@@ -346,6 +346,12 @@ export interface EquityPerformanceSchool {
   rank?: number;
   composite_score?: number;
   median_earnings?: number;
+  // Bias-adjusted fields
+  transfer_adjusted_completion?: number;
+  earnings_10yr?: number;
+  earnings_col_adjusted?: number;
+  earnings_value_add?: number;
+  earnings_value_add_pct?: number;
 }
 
 export interface EquityPerformanceData {

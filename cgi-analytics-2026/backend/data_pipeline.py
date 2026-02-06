@@ -11,6 +11,7 @@ from sklearn.linear_model import LinearRegression
 from pathlib import Path
 from dotenv import load_dotenv
 from math import radians, cos, sin, asin, sqrt
+from regional_price_parity import adjust_earnings_for_col, get_state_rpp
 
 load_dotenv()
 
@@ -51,6 +52,13 @@ FIELDS = [
     'latest.student.share_firstgeneration',  # First-gen %
     'latest.student.part_time_share',  # PPTUG_EF
     'latest.student.demographics.female_share',  # Female %
+    # Transfer and outcome data (for transfer-adjusted completion)
+    'latest.completion.transfer_rate.4yr.full_time',
+    'latest.completion.outcome_percentage.still_enrolled',
+    # 10-year earnings (for earnings value-add)
+    'latest.earnings.10_yrs_after_entry.median',
+    # Pooled completion rate (includes part-time students)
+    'latest.completion.completion_rate_4yr_150nt_pooled',
 ]
 
 
@@ -228,6 +236,9 @@ def calculate_bending_curve(df: pd.DataFrame) -> pd.DataFrame:
     Uses OLS regression controlling for student composition + institutional factors.
     Positive BC = school exceeds expectations given its student body.
     
+    UPDATED to use transfer-adjusted completion rate to avoid penalizing
+    schools that prepare students to transfer and complete elsewhere.
+    
     Based on Galvao, Tucker & Attewell (2025):
     https://pmc.ncbi.nlm.nih.gov/articles/PMC11737589/
     """
@@ -249,6 +260,16 @@ def calculate_bending_curve(df: pd.DataFrame) -> pd.DataFrame:
         errors='coerce'
     )
     
+    # Transfer rate and pooled completion (NEW)
+    df['transfer_rate'] = pd.to_numeric(
+        df.get('latest.completion.transfer_rate.4yr.full_time', np.nan),
+        errors='coerce'
+    )
+    df['completion_rate_pooled'] = pd.to_numeric(
+        df.get('latest.completion.completion_rate_4yr_150nt_pooled', np.nan),
+        errors='coerce'
+    )
+    
     # Calculate derived features
     df['full_time_share'] = 1 - df['part_time_share'].fillna(0.25)  # Default 75% FT
     df['ln_instruction_fte'] = np.log1p(df['instruction_per_fte'].fillna(10000))
@@ -263,18 +284,38 @@ def calculate_bending_curve(df: pd.DataFrame) -> pd.DataFrame:
         errors='coerce'
     ).fillna(0)
     
-    # Define regression features (based on Galvao et al.)
+    # Carnegie classification for program mix control
+    df['carnegie_basic'] = pd.to_numeric(
+        df.get('school.carnegie_basic', np.nan),
+        errors='coerce'
+    ).fillna(15)  # Default to general 4-year
+    
+    # Calculate TRANSFER-ADJUSTED completion rate
+    # Estimate ~60% of transfers eventually complete elsewhere (conservative estimate)
+    TRANSFER_SUCCESS_RATE = 0.60
+    df['transfer_adjusted_completion'] = (
+        df['completion_rate'].fillna(0) + 
+        df['transfer_rate'].fillna(0) * TRANSFER_SUCCESS_RATE
+    )
+    
+    # Use pooled rate if available (includes part-time students), 
+    # otherwise fall back to full-time only rate
+    df['completion_rate_best'] = df['completion_rate_pooled'].fillna(df['completion_rate'])
+    
+    # Define regression features (based on Galvao et al. + bias controls)
     feature_cols = [
         'pell_rate',           # Student composition
         'full_time_share',
         'black_pct',
         'hispanic_pct',
+        'first_gen_share',     # Added: first-gen students
         'ln_instruction_fte',  # Institutional
-        'admission_rate',
+        'admission_rate',      # Controls for selectivity bias
+        'carnegie_basic',      # Controls for program mix
     ]
     
-    # Outcome variable
-    outcome_col = 'completion_rate'
+    # Outcome variable: now using transfer-adjusted completion
+    outcome_col = 'transfer_adjusted_completion'
     
     # Filter to schools with complete data for regression
     regression_df = df.dropna(subset=[outcome_col] + feature_cols).copy()
@@ -300,16 +341,100 @@ def calculate_bending_curve(df: pd.DataFrame) -> pd.DataFrame:
     
     df['expected_completion_rate'] = model.predict(X_all.values)
     
-    # Bending the Curve = Actual - Expected
+    # Bending the Curve = Actual (transfer-adjusted) - Expected
     # Positive = school exceeds expectations
-    df['bending_curve'] = df['completion_rate'] - df['expected_completion_rate']
+    df['bending_curve'] = df['transfer_adjusted_completion'] - df['expected_completion_rate']
     
     # Convert to percentage points for easier interpretation
     df['bending_curve_pct'] = df['bending_curve'] * 100
     
     # Log model performance
     r2 = model.score(X, y)
-    print(f"Bending the Curve regression R² = {r2:.3f}")
+    print(f"Bending the Curve regression R² = {r2:.3f} (using transfer-adjusted completion)")
+    
+    return df
+
+
+def calculate_earnings_value_add(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calculate Earnings Value-Add: How much a school beats expected earnings.
+    
+    Uses OLS regression to predict expected earnings based on student demographics,
+    then calculates how much each school exceeds expectations.
+    
+    This addresses the bias where schools serving disadvantaged students appear
+    to have worse outcomes even when they're providing exceptional value.
+    
+    Also applies cost-of-living adjustment using BEA Regional Price Parities.
+    """
+    # Extract 10-year median earnings (more stable than 4-year)
+    df['earnings_10yr'] = pd.to_numeric(
+        df.get('latest.earnings.10_yrs_after_entry.median', np.nan),
+        errors='coerce'
+    )
+    
+    # Fall back to 4-year earnings if 10-year not available
+    df['earnings_10yr'] = df['earnings_10yr'].fillna(df.get('earnings_4yr', np.nan))
+    
+    # Get state for cost-of-living adjustment
+    df['state'] = df.get('school.state', '')
+    
+    # Apply cost-of-living adjustment
+    df['earnings_col_adjusted'] = df.apply(
+        lambda row: adjust_earnings_for_col(row.get('earnings_10yr'), row.get('state')),
+        axis=1
+    )
+    
+    # Define features for earnings prediction
+    # Include demographics and program factors that legitimately affect earnings
+    feature_cols = [
+        'pell_rate',           # Student composition
+        'first_gen_share',
+        'female_share',        # Gender pay gap factor
+        'black_pct',
+        'hispanic_pct',
+        'admission_rate',      # Selectivity
+        'carnegie_basic',      # Program mix proxy
+    ]
+    
+    # Outcome: COL-adjusted earnings
+    outcome_col = 'earnings_col_adjusted'
+    
+    # Filter to schools with complete data
+    regression_df = df.dropna(subset=[outcome_col] + feature_cols).copy()
+    
+    if len(regression_df) < 50:
+        df['expected_earnings'] = np.nan
+        df['earnings_value_add'] = np.nan
+        df['earnings_value_add_pct'] = np.nan
+        return df
+    
+    X = regression_df[feature_cols].values
+    y = regression_df[outcome_col].values
+    
+    # Fit OLS regression
+    model = LinearRegression()
+    model.fit(X, y)
+    
+    # Predict expected earnings for all schools
+    X_all = df[feature_cols].copy()
+    for col in feature_cols:
+        X_all[col] = X_all[col].fillna(X_all[col].median())
+    
+    df['expected_earnings'] = model.predict(X_all.values)
+    
+    # Earnings Value-Add = Actual (COL-adjusted) - Expected
+    # Positive = school produces higher earners than expected given student body
+    df['earnings_value_add'] = df['earnings_col_adjusted'] - df['expected_earnings']
+    
+    # Also express as percentage above/below expected
+    df['earnings_value_add_pct'] = (
+        (df['earnings_value_add'] / df['expected_earnings']) * 100
+    ).clip(-100, 100)  # Cap at ±100%
+    
+    # Log model performance
+    r2 = model.score(X, y)
+    print(f"Earnings Value-Add regression R² = {r2:.3f} (using COL-adjusted earnings)")
     
     return df
 
@@ -485,6 +610,9 @@ def engineer_features(df: pd.DataFrame) -> pd.DataFrame:
     
     # Add Bending the Curve (adjusted graduation rate)
     df = calculate_bending_curve(df)
+    
+    # Add Earnings Value-Add (risk-adjusted earnings with COL adjustment)
+    df = calculate_earnings_value_add(df)
     
     return df
 
