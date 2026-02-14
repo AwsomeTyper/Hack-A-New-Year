@@ -291,8 +291,12 @@ def calculate_bending_curve(df: pd.DataFrame) -> pd.DataFrame:
     ).fillna(15)  # Default to general 4-year
     
     # Calculate TRANSFER-ADJUSTED completion rate
-    # Estimate ~60% of transfers eventually complete elsewhere (conservative estimate)
-    TRANSFER_SUCCESS_RATE = 0.60
+    # ~50% of transfers eventually complete a bachelor's degree elsewhere
+    # Source: National Student Clearinghouse Research Center (NSCRC)
+    # "Slightly less than half (49.7%) of students who transferred from 
+    # a community college completed a bachelor's degree."
+    # https://nscresearchcenter.org/transfer-outcomes/
+    TRANSFER_SUCCESS_RATE = 0.50
     df['transfer_adjusted_completion'] = (
         df['completion_rate'].fillna(0) + 
         df['transfer_rate'].fillna(0) * TRANSFER_SUCCESS_RATE

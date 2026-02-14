@@ -1,0 +1,30 @@
+PROJECT AEGIS — Pell Grant ROI Analytics
+The Pell Grant once covered 61% of public university costs; today it covers 25%. This $30B annual investment functions as an access voucher rather than a completion investment. Project Aegis turns raw College Scorecard data into an interactive policy brief that diagnoses failures, predicts institutional risk, and prescribes funding reforms for decision-makers.
+
+DATA SOURCES
+  • College Scorecard — U.S. Dept. of Education (Data.gov), 1,810 institutions, 30+ fields
+    https://catalog.data.gov/dataset/college-scorecard
+    API: https://api.data.gov/ed/collegescorecard/v1/schools
+  • Pell Grant Max Awards — Congressional Research Service / Federal Student Aid (1973–2024) https://studentaid.gov/understand-aid/types/grants/pell
+  • Cost of Attendance History — College Board, Trends in College Pricing (1973–2024) https://research.collegeboard.org/trends/college-pricing
+  • Regional Price Parities — Bureau of Economic Analysis, 50 states + DC (COL adjustment) https://www.bea.gov/data/prices-inflation/regional-price-parities-state-and-metro-area
+
+METHODS & TOOLS
+  Backend:  Python 3.13, FastAPI, Pandas, NumPy
+  ML/Stats: OLS Regression (sklearn), XGBoost
+  Optimize: Linear Programming (PuLP)
+  Frontend: Next.js 16, React, Recharts, Framer Motion
+
+Descriptive: Purchasing Power Gap — Pell max ÷ avg. cost of attendance (50-yr trend); Completion Gap — 6-yr graduation rate: Pell vs. non-Pell, same institution; Vertical Equity — net price vs. Pell rate correlation
+Predictive: Bending the Curve — OLS value-add: actual − expected completion (R²=0.506); Earnings Value-Add — OLS on 10-yr earnings, COL-adjusted via BEA RPP (R²=0.262); Viability Risk — composite index: Pell dependency, completion, admission rate
+Prescriptive: Budget Optimization — LP maximizing graduates under $10M–$100M constraint; Performance Allocation — bonus funding to high value-add institutions; Retention Trigger — emergency micro-grants for at-risk students
+
+DESIGN CHOICES
+  1. Scrolling Policy Brief — reads as a narrative (problem → evidence → solution) to communicate
+     findings to non-technical decision-makers and score on Storytelling and Business Value.
+  2. Equity-First Metrics — every metric controls for demographics via OLS residuals so schools
+     serving disadvantaged populations aren't penalized. Addresses the "Creaming" risk.
+  3. Interactive What-If — budget slider, quadrant filters, and 3 strategy comparisons let users
+     explore trade-offs in real time, demonstrating Innovation and User Experience.
+  4. Bias Controls — transfer adjustment (NSCRC), cost-of-living (BEA RPP), Carnegie-class
+     controls, geographic isolation (Haversine), and part-time inclusion ensure analytical rigor (Analytical Depth).

@@ -1,94 +1,61 @@
-# Project Aegis: University Resilience Suite
+# Project Aegis — Pell Grant ROI Analytics
 
-**One-Page Documentation for CGI Business Analytics Competition**
-
----
-
-## The Challenge
-
-By 2026, the U.S. higher education sector faces a "Demographic Cliff"—a 15%+ decline in college-age population caused by falling birth rates after the 2008 financial crisis. Tuition-dependent institutions, particularly regional public universities and small private colleges, face existential risk.
-
-**Project Aegis** is a Strategic Resilience Engine that helps university administrators identify risk, predict outcomes, and optimize decisions to survive this transformation.
+**CGI Hack-A-New-Year 2026 · Business Analytics Competition — Documentation**
 
 ---
+
+## The Story
+
+The Pell Grant once covered 61% of public university costs. Today it covers just 25%. This collapse has turned a completion investment into an access voucher—$30 billion annually subsidizing enrollment at institutions where many students never graduate. Project Aegis transforms raw College Scorecard data into an interactive policy brief that diagnoses the system's failures, predicts institutional risk, and prescribes evidence-based funding reforms.
 
 ## Data Sources
 
-| Dataset           | Source                                   | Link                                                                                     |
-| ----------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------- |
-| College Scorecard | U.S. Department of Education             | [data.gov/dataset/college-scorecard](https://catalog.data.gov/dataset/college-scorecard) |
-| Institution Data  | 1,810 bachelor's degree-granting schools | Fetched via REST API                                                                     |
+| Dataset                    | Source                                               | Records                                | Link                                                                                                                                                                 |
+| -------------------------- | ---------------------------------------------------- | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| College Scorecard          | U.S. Department of Education (Data.gov)              | 1,810 bachelor's-granting institutions | [catalog.data.gov/dataset/college-scorecard](https://catalog.data.gov/dataset/college-scorecard)                                                                     |
+| Pell Grant Max Awards      | Congressional Research Service / Federal Student Aid | 50 years (1973–2024)                   | [studentaid.gov/understand-aid/types/grants/pell](https://studentaid.gov/understand-aid/types/grants/pell)                                                           |
+| Cost of Attendance History | College Board, _Trends in College Pricing_           | 50 years (1973–2024)                   | [research.collegeboard.org/trends/college-pricing](https://research.collegeboard.org/trends/college-pricing)                                                         |
+| Regional Price Parities    | Bureau of Economic Analysis                          | 50 states + DC                         | [bea.gov/data/prices-inflation/regional-price-parities-state-and-metro-area](https://www.bea.gov/data/prices-inflation/regional-price-parities-state-and-metro-area) |
 
-**API Endpoint**: `https://api.data.gov/ed/collegescorecard/v1/schools`
-
----
+**API Endpoint:** `https://api.data.gov/ed/collegescorecard/v1/schools` — 30+ fields per institution including demographics, financials, completion rates, and earnings.
 
 ## Methods & Tools
 
-### Technology Stack
+| Layer        | Technology                                 | Purpose                                  |
+| ------------ | ------------------------------------------ | ---------------------------------------- |
+| Backend      | Python 3.13, FastAPI, Pandas, NumPy        | API data pipeline, feature engineering   |
+| ML / Stats   | OLS Regression (sklearn), XGBoost          | Value-add scoring, earnings prediction   |
+| Optimization | Linear Programming (PuLP)                  | Budget allocation maximizing graduates   |
+| Frontend     | Next.js 16, React, Recharts, Framer Motion | Interactive dashboard and visualizations |
 
-- **Backend**: Python 3.13, FastAPI, Pandas, NumPy
-- **ML/Optimization**: XGBoost (regression), SHAP (explainability), PuLP (linear programming)
-- **Frontend**: Next.js 16, React, Recharts, Tailwind CSS
-- **Development**: Google Antigravity (agentic AI IDE)
+### Three-Tier Analytics
 
-### Analytics Approach
+| Tier             | Metric                        | Method                                                                                 |
+| ---------------- | ----------------------------- | -------------------------------------------------------------------------------------- |
+| **Descriptive**  | Purchasing Power Gap          | Pell max award ÷ avg. cost of attendance (1974–2024 time series)                       |
+| **Descriptive**  | Completion Gap                | 6-yr graduation rate: Pell vs. non-Pell within same institution                        |
+| **Descriptive**  | Vertical Equity               | Net price for low-income families vs. Pell rate correlation                            |
+| **Predictive**   | Bending the Curve (Value-Add) | OLS regression controlling for demographics → actual − expected completion (R² = 0.51) |
+| **Predictive**   | Earnings Value-Add            | OLS on 10-yr median earnings, COL-adjusted via BEA RPP data (R² = 0.26)                |
+| **Predictive**   | Institutional Viability       | Composite risk index: Pell dependency, completion rate, admission rate                 |
+| **Prescriptive** | Enrollment Optimization       | LP via PuLP: maximize total graduates subject to budget constraint ($10M–$100M slider) |
+| **Prescriptive** | Performance Allocation        | Bonus funding routed to high Value-Add institutions                                    |
+| **Prescriptive** | Retention Trigger             | Emergency micro-grants for at-risk students flagged by predictive model                |
 
-| Tier             | Technique                          | Implementation                                             |
-| ---------------- | ---------------------------------- | ---------------------------------------------------------- |
-| **Descriptive**  | Summary statistics, visualizations | KPI cards, risk histogram, trend charts                    |
-| **Predictive**   | XGBoost regression                 | Retention rate forecasting with SHAP explanations          |
-| **Prescriptive** | Linear programming                 | Financial aid optimizer maximizing yield under constraints |
-
-### Engineered Features
-
-1. **Resilience Risk Index**: Composite of admission rate, completion rate, Pell dependency
-2. **Value-Add Ratio**: Median earnings ÷ Net price (ROI proxy)
-3. **Geographic Isolation Score**: Haversine distance to nearest major metro
-
----
+**Key Engineered Features:** Transfer-Adjusted Completion Rate (50% transfer success, per NSCRC data), Geographic Isolation Score (Haversine distance to nearest metro), Resilience Risk Index (composite of admission rate, completion rate, and Pell dependency), Carnegie-class imputation for missing values.
 
 ## Design Choices & Rationale
 
-### 1. CGI Branding
+1. **Scrolling Policy Brief (not tabbed dashboard):** The site reads like a narrative argument — problem → evidence → solution → recommendations — to score on _Storytelling_ and communicate to non-technical decision-makers (_Business Value_).
 
-Strict adherence to CGI's visual identity (#E31937 red, #005288 blue) to demonstrate enterprise-grade professionalism.
+2. **Equity-First Metric Design:** Every metric controls for student demographics. "Bending the Curve" uses OLS residuals so that schools serving disadvantaged populations aren't penalized for lower raw completion rates. We also address the "Creaming" risk — performance-based reforms must not incentivize schools to reject high-risk students.
 
-### 2. Z-Pattern Dashboard Layout
+3. **Bias Controls:** Transfer-adjusted completion (NSCRC source), cost-of-living adjustment (BEA RPP), Carnegie-class controls, and part-time student inclusion ensure analytical integrity (_Analytical Depth_).
 
-Eye-tracking research shows users scan in a Z-pattern. Critical Resilience Score is anchored top-left; details flow right and down.
+4. **Interactive "What-If" Scenarios:** Budget slider ($10M–$100M), quadrant filtering on the Equity vs. Excellence matrix, and three strategy comparisons let users explore trade-offs in real time (_Innovation_, _User Experience_).
 
-### 3. Scenario Planner
-
-Decision-makers need "what-if" analysis. Interactive sliders let administrators see real-time impact of budget changes on enrollment outcomes.
-
-### 4. Fairness-First Design
-
-Higher education analytics can perpetuate inequality. We built fairness auditing into the pipeline using the four-fifths rule to detect demographic disparities.
-
-### 5. Agentic Development
-
-Custom "Agent Skills" (cgi-brand-stylist, scorecard-api-expert, fairness-bias-auditor) encode domain knowledge for consistent, high-quality output.
+5. **CGI Brand Identity:** Deep-space dark theme with accent colors (#E31937 red, emerald, amber) applied consistently across charts, cards, and typography to demonstrate enterprise-grade polish.
 
 ---
 
-## Key Insights
-
-| Finding                                       | Implication                                                |
-| --------------------------------------------- | ---------------------------------------------------------- |
-| **306 schools** (41%) are High/Critical risk  | Immediate intervention needed for nearly half the sector   |
-| **Revenue rising despite enrollment decline** | Price increases mask vulnerability—unsustainable post-2026 |
-| **Geographic isolation** correlates with risk | Rural institutions need targeted support strategies        |
-
----
-
-## Recommendations
-
-1. **Prioritize Retention**: Retaining students is cheaper than recruiting new ones
-2. **Optimize Aid Allocation**: Use LP optimization to maximize yield within budget
-3. **Monitor Resilience Score**: Track institutional health quarterly
-4. **Plan for 2026 Now**: Institutions in "yellow zone" have 2-3 years to pivot
-
----
-
-_Built with the CGI Data2Diamonds methodology_
+_Built with real data from Data.gov · Project Aegis · CGI Hackathon 2026_
