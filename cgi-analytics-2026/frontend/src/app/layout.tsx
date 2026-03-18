@@ -3,7 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
-  variable: "--font-inter",
+  variable: "--font-sans",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
 });
@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
-        style={{ fontFamily: 'var(--font-inter), system-ui, sans-serif' }}
+        style={{ fontFamily: 'var(--font-sans), system-ui, sans-serif' }}
         suppressHydrationWarning
       >
         {children}

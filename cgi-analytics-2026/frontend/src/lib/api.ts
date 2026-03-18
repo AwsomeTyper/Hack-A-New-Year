@@ -247,6 +247,14 @@ export interface EnrollmentOptimization {
   total_expected_graduates: number;
   avg_cost_per_graduate: number;
   total_pell_students?: number;
+  // Baselines (status-quo across ALL eligible schools)
+  baseline_pell_students?: number;
+  baseline_expected_graduates?: number;
+  baseline_schools?: number;
+  eligible_schools?: number;
+  // Aggregate model outputs
+  total_enrollment_impact?: number;
+  // Strategy-specific
   bonus_eligible_schools?: number;
   students_with_micro_grants?: number;
   intervention_lift?: number;
@@ -259,7 +267,14 @@ export interface EnrollmentOptimization {
     pell_students: number;
     completion_rate: number;
     expected_graduates: number;
+    // Per-school before/after
+    baseline_graduates?: number;
+    projected_graduates?: number;
+    graduate_delta?: number;
+    enrollment_impact?: number;
+    dropout_risk?: number;
     cost_per_graduate?: number;
+    pell_per_student?: number;
     performance_bonus?: number;
     emergency_allocation?: number;
   }>;
@@ -294,6 +309,28 @@ export async function fetchCompletionGap(limit = 50): Promise<CompletionGapData>
 export async function fetchElasticity(grantChange = 1000): Promise<ElasticityData> {
   const res = await fetch(`${API_BASE}/api/predict/elasticity?grant_change=${grantChange}`);
   if (!res.ok) throw new Error('Failed to fetch elasticity');
+  return res.json();
+}
+
+// Fetch model performance metrics
+export interface ModelMetrics {
+  models: Array<{
+    name: string;
+    type: string;
+    cv_auc?: number;
+    r_squared?: number;
+    schools_analyzed?: number;
+    schools_exceeding?: number;
+    schools_below?: number;
+    base_elasticity?: number;
+    feature_importance?: Record<string, number>;
+    factors?: Record<string, string>;
+  }>;
+}
+
+export async function fetchModelMetrics(): Promise<ModelMetrics> {
+  const res = await fetch(`${API_BASE}/api/model-metrics`);
+  if (!res.ok) throw new Error('Failed to fetch model metrics');
   return res.json();
 }
 
@@ -403,3 +440,28 @@ export async function fetchEquityPerformance(params?: {
   return res.json();
 }
 
+export interface VerticalEquityData {
+  max_pell_award: number;
+  avg_unmet_need: number;
+  median_unmet_need: number;
+  pct_pell_insufficient: number;
+  bracket_averages: Array<{
+    bracket: string;
+    avg_net_price: number;
+    median_net_price: number;
+    count: number;
+  }>;
+  distribution: Array<{
+    bracket: string;
+    count: number;
+    pct: number;
+  }>;
+  equity_ratio: number | null;
+  total_schools: number;
+}
+
+export async function fetchVerticalEquity(): Promise<VerticalEquityData> {
+  const res = await fetch(`${API_BASE}/api/vertical-equity`);
+  if (!res.ok) throw new Error('Failed to fetch vertical equity data');
+  return res.json();
+}

@@ -5,6 +5,8 @@ import HeroSection from '@/components/sections/HeroSection';
 import EvidenceSection from '@/components/sections/EvidenceSection';
 import OptimizerSection from '@/components/sections/OptimizerSection';
 import ImpactSection from '@/components/sections/ImpactSection';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { 
   fetchPurchasingPower, 
   fetchCompletionGap, 
@@ -119,23 +121,27 @@ export default function PolicyBrief() {
   const elasticityImpact = elasticity?.system_wide?.find(e => e.grant_change === 1000)?.total_enrollment_change || 370000;
 
   return (
-    <main className="bg-[var(--bg-void)]">
-      <HeroSection 
-        currentCoverage={Math.round(currentCoverage)}
-        historicalCoverage={Math.round(historicalCoverage)}
-      />
-      <EvidenceSection 
-        purchasingPowerData={purchasingPowerTimeSeries}
-        completionGapData={completionGapInstitutions}
-        atRiskCount={atRiskCount}
-        avgCompletionGap={avgCompletionGap}
-        totalErosion={Math.round(totalErosion)}
-        viabilitySummary={viabilitySummary}
-        elasticityImpact={elasticityImpact}
-        equityPerformanceData={equityPerformance}
-      />
-      <OptimizerSection />
-      <ImpactSection />
-    </main>
+    <>
+      <Header />
+      <main className="bg-[var(--bg-void)]">
+        <HeroSection 
+          currentCoverage={Math.round(currentCoverage)}
+          historicalCoverage={Math.round(historicalCoverage)}
+        />
+        <EvidenceSection 
+          purchasingPowerData={purchasingPowerTimeSeries}
+          completionGapData={completionGapInstitutions}
+          atRiskCount={atRiskCount}
+          avgCompletionGap={avgCompletionGap}
+          totalErosion={Math.round(totalErosion)}
+          viabilitySummary={viabilitySummary}
+          elasticityImpact={elasticityImpact}
+          equityPerformanceData={equityPerformance}
+        />
+        <OptimizerSection />
+        <ImpactSection />
+      </main>
+      <Footer />
+    </>
   );
 }

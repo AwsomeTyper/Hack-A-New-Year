@@ -2,6 +2,7 @@
 
 import { motion } from 'motion/react';
 import { ChevronDown } from 'lucide-react';
+import InfoTooltip from '@/components/ui/InfoTooltip';
 
 interface HeroSectionProps {
   currentCoverage: number;
@@ -29,7 +30,7 @@ export default function HeroSection({
         }}
       />
       
-      <div className="container relative z-10">
+      <div className="page-container relative z-10">
         {/* Branding */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -66,9 +67,9 @@ export default function HeroSection({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-headline text-[var(--text-secondary)] max-w-3xl mx-auto mb-6"
+          className="text-headline text-[var(--text-secondary)] max-w-3xl mx-auto mb-6 text-center"
         >
-          Pell Grant purchasing power has collapsed over 50 years
+          Pell Grant purchasing power has collapsed over 50 years<InfoTooltip text="The Pell Grant program began in 1972 as the Basic Educational Opportunity Grant. This analysis spans from 1973 to the most recent academic year using College Scorecard and NCES data." />
         </motion.h1>
         
         {/* Subtext */}
@@ -76,9 +77,9 @@ export default function HeroSection({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="text-body max-w-2xl mx-auto mb-12"
+          className="text-body max-w-2xl mx-auto mb-12 text-center"
         >
-          What once covered {historicalCoverage}% of public university costs now covers just {currentCoverage}%. 
+          What once covered {historicalCoverage}% of public university costs now covers just {currentCoverage}%.<InfoTooltip text="Coverage percentage is calculated as (Maximum Pell Grant ÷ Average Cost of Attendance at public 4-year institutions) × 100. Historical peak was in the mid-1970s." />{' '}
           This dashboard reveals the evidence—and the path to transforming federal investment 
           from <span className="text-[var(--text-primary)]">access vouchers</span> into{' '}
           <span className="text-[var(--accent-emerald)]">completion investments</span>.
@@ -113,9 +114,12 @@ export default function HeroSection({
       
       {/* Scroll Indicator */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
+        initial={{ opacity: 0, x: "-50%" }}
+        animate={{ opacity: 1, y: [0, 8, 0] }}
+        transition={{ 
+          opacity: { delay: 1.2, duration: 0.6 },
+          y: { repeat: Infinity, duration: 2, ease: "easeInOut", delay: 1.2 }
+        }}
         className="scroll-indicator"
       >
         <span className="text-caption">Scroll to explore</span>

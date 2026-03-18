@@ -1,13 +1,22 @@
 """
 Financial Aid Optimization Engine using Linear Programming (PuLP)
 Optimizes resource allocation across REAL institutions from College Scorecard.
+
+Integrates predictive models (DropoutRisk, PriceElasticity) so that the
+prescriptive optimizer is driven by ML-predicted risk and econometric impact
+estimates rather than raw CSV columns alone.
 """
 import ast
 import json
+import logging
 import numpy as np
 import pandas as pd
 from pathlib import Path
 from pulp import LpProblem, LpMaximize, LpVariable, lpSum, LpStatus, value
+
+from predictive_models import DropoutRiskModel, PriceElasticityModel
+
+log = logging.getLogger(__name__)
 
 DATA_DIR = Path(__file__).parent.parent / 'data'
 
@@ -313,11 +322,17 @@ class PellGrantOptimizer:
     1. BASE: Standard allocation based on enrollment × completion rate
     2. PERFORMANCE: Bonus allocations to high Value-Add schools (mobility rate)
     3. RETENTION_TRIGGER: Reserve budget for micro-grants to high-risk students
+    
+    Integrates predictive models so that prescriptive outputs are driven by
+    model-predicted risk and econometric impact estimates.
     """
     
     def __init__(self):
         self.df = None
+        self.dropout_model = DropoutRiskModel()
+        self.elasticity_model = PriceElasticityModel()
         self._load_data()
+        self._enrich_with_predictions()
     
     def _load_data(self):
         """Load processed Scorecard data."""
@@ -326,6 +341,31 @@ class PellGrantOptimizer:
             self.df = pd.read_csv(data_file)
         else:
             raise FileNotFoundError("Scorecard data not found. Run data_pipeline.py first.")
+    
+    def _enrich_with_predictions(self):
+        """
+        Train predictive models on the loaded data and append their
+        predictions as new columns so every strategy can use them.
+        """
+        try:
+            train_result = self.dropout_model.train(self.df)
+            log.info("Dropout model trained: AUC=%.3f", train_result['cv_auc_mean'])
+            self.df = self.dropout_model.predict_batch(self.df)
+        except Exception as e:
+            log.warning("Dropout model training failed, falling back: %s", e)
+            self.df['dropout_risk_prob'] = 1 - self.df.get('retention_rate', pd.Series(0.7)).fillna(0.7)
+            self.df['dropout_risk_level'] = self.df['dropout_risk_prob'].apply(
+                lambda p: 'high' if p > 0.5 else ('medium' if p > 0.3 else 'low')
+            )
+        
+        # Pre-compute per-school price elasticity
+        def _elasticity_for_row(row):
+            return self.elasticity_model.estimate_elasticity(
+                pell_rate=float(row.get('pell_rate', 0.35) or 0.35),
+                net_price=float(row.get('net_price_low_income', 15000) or 15000),
+                admission_rate=float(row.get('admission_rate', 0.5) or 0.5),
+            )
+        self.df['price_elasticity'] = self.df.apply(_elasticity_for_row, axis=1)
     
     def run_enrollment_optimization(
         self,
@@ -339,16 +379,8 @@ class PellGrantOptimizer:
         """
         Run enrollment optimization with specified strategy.
         
-        Args:
-            budget: Total budget to allocate
-            strategy: 'base', 'performance', or 'retention_trigger'
-            performance_bonus_pct: % of budget for performance bonuses (if strategy='performance')
-            retention_reserve_pct: % of budget reserved for micro-grants (if strategy='retention_trigger')
-            min_completion_rate: Minimum completion rate to qualify for funding
-            max_per_school: Maximum allocation per school
-        
-        Returns:
-            Optimization results with allocations and projected graduates
+        Returns baseline (status-quo) metrics alongside optimized projections
+        so the frontend can show real before/after comparisons.
         """
         df = self.df.dropna(subset=['student_size', 'completion_rate', 'pell_rate']).copy()
         
@@ -358,61 +390,100 @@ class PellGrantOptimizer:
         if len(df) == 0:
             return {'status': 'Error', 'error': 'No schools match criteria'}
         
-        # Calculate base allocation metrics
+        # ── Derived columns ──────────────────────────────────────────────
         df['pell_students'] = (df['student_size'] * df['pell_rate']).astype(int)
         df['expected_graduates'] = df['pell_students'] * df['completion_rate']
         
-        # Calculate value-add score for performance bonuses
-        # Value-add = earnings relative to debt (higher = better ROI)
+        # Value-add score (used by performance strategy)
         df['value_add_score'] = df.get('value_add_ratio', 3.0).fillna(3.0)
-        
-        # Normalize value-add to 0-1 scale
         va_min = df['value_add_score'].min()
         va_max = df['value_add_score'].max()
         df['value_add_normalized'] = (df['value_add_score'] - va_min) / (va_max - va_min + 0.001)
         
-        # Calculate risk score for retention triggers (higher = more at risk)
-        df['dropout_risk'] = 1 - df.get('retention_rate', 0.7).fillna(0.7)
+        # Use model-predicted dropout risk from DropoutRiskModel
+        # (falls back to 1 - retention_rate if model wasn't trained)
+        if 'dropout_risk_prob' in df.columns:
+            df['dropout_risk'] = df['dropout_risk_prob']
+        else:
+            df['dropout_risk'] = 1 - df.get('retention_rate', 0.7).fillna(0.7)
         
-        # === STRATEGY-SPECIFIC LOGIC ===
-        
+        # ── Run strategy ─────────────────────────────────────────────────
         if strategy == 'base':
             result = self._base_allocation(df, budget, max_per_school)
-            
         elif strategy == 'performance':
             result = self._performance_pricing(df, budget, max_per_school, performance_bonus_pct)
-            
         elif strategy == 'retention_trigger':
             result = self._retention_trigger(df, budget, max_per_school, retention_reserve_pct)
-            
         else:
             return {'status': 'Error', 'error': f'Unknown strategy: {strategy}'}
         
+        # ── Baselines scoped to FUNDED schools only ──────────────────────
+        # This makes the delta = marginal improvement from the investment
+        allocations = result.get('allocations', [])
+        baseline_pell_students = sum(a.get('pell_students', 0) for a in allocations)
+        baseline_expected_graduates = sum(a.get('baseline_graduates', 0) for a in allocations)
+        
+        # ── Inject metadata ──────────────────────────────────────────────
         result['strategy'] = strategy
         result['total_budget'] = budget
+        result['baseline_pell_students'] = baseline_pell_students
+        result['baseline_expected_graduates'] = baseline_expected_graduates
+        result['baseline_schools'] = len(allocations)  # funded schools
+        result['eligible_schools'] = len(df)            # total eligible pool
         
         return result
     
     def _base_allocation(self, df: pd.DataFrame, budget: float, max_per_school: float) -> dict:
         """
         Base allocation: Proportional to expected graduates (enrollment × completion).
-        Objective: Maximize total graduates per dollar.
+        Schools are ranked by efficiency and funded until budget is exhausted.
+        Now includes per-school before/after using PriceElasticityModel.
         """
-        # Allocate proportional to expected graduates
-        total_expected = df['expected_graduates'].sum()
+        df = df.copy()
+        df['funding_need'] = df['pell_students'] * 5000
+        df['funding_need'] = df['funding_need'].clip(upper=max_per_school)
+        df['efficiency'] = df['expected_graduates'] / df['funding_need'].clip(lower=1)
+        
+        df = df.sort_values('efficiency', ascending=False).reset_index(drop=True)
         
         allocations = []
+        remaining_budget = budget
         total_allocated = 0
         total_graduates = 0
+        total_pell = 0
+        total_enrollment_impact = 0
         
         for _, row in df.iterrows():
-            # Proportional allocation
-            allocation = (row['expected_graduates'] / total_expected) * budget
-            allocation = min(allocation, max_per_school)
+            if remaining_budget <= 0:
+                break
             
-            # Calculate cost per graduate
-            graduates = row['expected_graduates']
-            cost_per_grad = allocation / graduates if graduates > 0 else float('inf')
+            allocation = min(row['funding_need'], remaining_budget, max_per_school)
+            if allocation < 10_000:
+                continue
+            
+            # Baseline (no intervention)
+            baseline_grads = int(row['expected_graduates'])
+            
+            # Projected (with grant funding)
+            grad_ratio = allocation / max(row['funding_need'], 1)
+            projected_grads = int(row['expected_graduates'] * min(grad_ratio, 1.0))
+            
+            # Enrollment impact from price elasticity model
+            grant_per_student = allocation / max(row['pell_students'], 1)
+            enrollment = self.elasticity_model.predict_enrollment_change(
+                current_enrollment=int(row.get('student_size', 1000)),
+                current_net_price=float(row.get('net_price_low_income', 15000) or 15000),
+                grant_change=grant_per_student,
+                pell_rate=float(row.get('pell_rate', 0.35)),
+                admission_rate=float(row.get('admission_rate', 0.5) or 0.5),
+            )
+            enroll_change = enrollment['enrollment_change']
+            
+            # Additional graduates from enrollment lift
+            additional_grads_from_enrollment = int(enroll_change * row['completion_rate'] * row['pell_rate'])
+            projected_grads += additional_grads_from_enrollment
+            
+            cost_per_grad = allocation / projected_grads if projected_grads > 0 else float('inf')
             
             allocations.append({
                 'school_id': int(row.get('id', 0)),
@@ -421,26 +492,34 @@ class PellGrantOptimizer:
                 'allocation': round(allocation, 2),
                 'pell_students': int(row['pell_students']),
                 'completion_rate': round(row['completion_rate'], 3),
-                'expected_graduates': int(graduates),
+                'baseline_graduates': baseline_grads,
+                'projected_graduates': projected_grads,
+                'graduate_delta': projected_grads - baseline_grads,
+                'expected_graduates': projected_grads,          # back-compat
+                'enrollment_impact': enroll_change,
                 'cost_per_graduate': round(cost_per_grad, 2),
-                'pell_per_student': round(allocation / max(row['pell_students'], 1), 2)
+                'pell_per_student': round(grant_per_student, 2),
+                'dropout_risk': round(float(row.get('dropout_risk', 0)), 3),
             })
             
+            remaining_budget -= allocation
             total_allocated += allocation
-            total_graduates += graduates
+            total_graduates += projected_grads
+            total_pell += int(row['pell_students'])
+            total_enrollment_impact += enroll_change
         
-        # Sort by allocation (descending)
         allocations.sort(key=lambda x: x['allocation'], reverse=True)
         
         return {
             'status': 'Optimal',
             'total_allocated': round(total_allocated, 2),
-            'budget_utilization': round(total_allocated / budget, 4),
+            'budget_utilization': round(total_allocated / budget, 4) if budget > 0 else 0,
             'schools_funded': len(allocations),
-            'total_pell_students': int(df['pell_students'].sum()),
+            'total_pell_students': total_pell,
             'total_expected_graduates': int(total_graduates),
+            'total_enrollment_impact': total_enrollment_impact,
             'avg_cost_per_graduate': round(total_allocated / total_graduates, 2) if total_graduates > 0 else 0,
-            'allocations': allocations[:30]  # Top 30
+            'allocations': allocations[:30],
         }
     
     def _performance_pricing(
@@ -453,36 +532,71 @@ class PellGrantOptimizer:
         """
         Performance-Based Pricing: Base allocation + bonus for high Value-Add schools.
         Shifts funds from low-mobility to high-mobility institutions.
+        Schools are funded until budget is exhausted.
         """
+        df = df.copy()
+        
         # Split budget: base allocation + performance bonus pool
         base_budget = budget * (1 - bonus_pct)
         bonus_pool = budget * bonus_pct
         
-        total_expected = df['expected_graduates'].sum()
+        # Calculate funding need per school
+        df['funding_need'] = df['pell_students'] * 5000
+        df['funding_need'] = df['funding_need'].clip(upper=max_per_school)
         
         # Get top 20% by value-add for bonus eligibility
         value_add_threshold = df['value_add_score'].quantile(0.80)
         df['bonus_eligible'] = df['value_add_score'] >= value_add_threshold
         
+        # Rank by combined efficiency × value-add
+        df['efficiency'] = df['expected_graduates'] / df['funding_need'].clip(lower=1)
+        df['perf_score'] = df['efficiency'] * (1 + df['value_add_normalized'])
+        df = df.sort_values('perf_score', ascending=False).reset_index(drop=True)
+        
         allocations = []
+        remaining_base = base_budget
+        remaining_bonus = bonus_pool
         total_allocated = 0
         total_graduates = 0
+        total_pell = 0
         bonus_allocated = 0
+        total_enrollment_impact = 0
         
         for _, row in df.iterrows():
-            # Base allocation
-            base_alloc = (row['expected_graduates'] / total_expected) * base_budget
+            if remaining_base <= 0 and remaining_bonus <= 0:
+                break
             
-            # Performance bonus for high value-add schools
+            base_alloc = min(row['funding_need'], remaining_base, max_per_school)
+            
             bonus = 0
-            if row['bonus_eligible']:
-                # Bonus proportional to expected graduates × value-add
-                eligible_total = df[df['bonus_eligible']]['expected_graduates'].sum()
-                if eligible_total > 0:
-                    bonus = (row['expected_graduates'] / eligible_total) * bonus_pool * row['value_add_normalized']
+            if row['bonus_eligible'] and remaining_bonus > 0:
+                bonus = min(base_alloc * 0.3 * row['value_add_normalized'], remaining_bonus)
             
-            allocation = min(base_alloc + bonus, max_per_school)
-            graduates = row['expected_graduates']
+            allocation = base_alloc + bonus
+            if allocation < 10_000:
+                continue
+            
+            # Baseline (no intervention)
+            baseline_grads = int(row['expected_graduates'])
+            
+            # Projected (with grant funding)
+            grad_ratio = allocation / max(row['funding_need'], 1)
+            projected_grads = int(row['expected_graduates'] * min(grad_ratio, 1.0))
+            
+            # Enrollment impact from price elasticity model
+            grant_per_student = allocation / max(row['pell_students'], 1)
+            enrollment = self.elasticity_model.predict_enrollment_change(
+                current_enrollment=int(row.get('student_size', 1000)),
+                current_net_price=float(row.get('net_price_low_income', 15000) or 15000),
+                grant_change=grant_per_student,
+                pell_rate=float(row.get('pell_rate', 0.35)),
+                admission_rate=float(row.get('admission_rate', 0.5) or 0.5),
+            )
+            enroll_change = enrollment['enrollment_change']
+            additional_grads = int(enroll_change * row['completion_rate'] * row['pell_rate'])
+            projected_grads += additional_grads
+            
+            cost_per_grad = allocation / projected_grads if projected_grads > 0 else 0
             
             allocations.append({
                 'school_id': int(row.get('id', 0)),
@@ -495,13 +609,22 @@ class PellGrantOptimizer:
                 'value_add_score': round(row['value_add_score'], 2),
                 'pell_students': int(row['pell_students']),
                 'completion_rate': round(row['completion_rate'], 3),
-                'expected_graduates': int(graduates),
-                'cost_per_graduate': round(allocation / graduates, 2) if graduates > 0 else 0
+                'baseline_graduates': baseline_grads,
+                'projected_graduates': projected_grads,
+                'graduate_delta': projected_grads - baseline_grads,
+                'expected_graduates': projected_grads,
+                'enrollment_impact': enroll_change,
+                'cost_per_graduate': round(cost_per_grad, 2),
+                'dropout_risk': round(float(row.get('dropout_risk', 0)), 3),
             })
             
+            remaining_base -= base_alloc
+            remaining_bonus -= bonus
             total_allocated += allocation
-            total_graduates += graduates
+            total_graduates += projected_grads
+            total_pell += int(row['pell_students'])
             bonus_allocated += bonus
+            total_enrollment_impact += enroll_change
         
         allocations.sort(key=lambda x: x['allocation'], reverse=True)
         
@@ -512,11 +635,13 @@ class PellGrantOptimizer:
             'bonus_pool': round(bonus_pool, 2),
             'bonus_distributed': round(bonus_allocated, 2),
             'bonus_eligible_schools': int(df['bonus_eligible'].sum()),
-            'budget_utilization': round(total_allocated / budget, 4),
+            'budget_utilization': round(total_allocated / budget, 4) if budget > 0 else 0,
             'schools_funded': len(allocations),
+            'total_pell_students': total_pell,
             'total_expected_graduates': int(total_graduates),
+            'total_enrollment_impact': total_enrollment_impact,
             'avg_cost_per_graduate': round(total_allocated / total_graduates, 2) if total_graduates > 0 else 0,
-            'allocations': allocations[:30]
+            'allocations': allocations[:30],
         }
     
     def _retention_trigger(
@@ -529,50 +654,81 @@ class PellGrantOptimizer:
         """
         Retention Grant Trigger: Reserve budget for emergency micro-grants.
         
-        1. Allocate (1-reserve_pct) as base funding
+        1. Allocate (1-reserve_pct) as base funding until budget exhausted
         2. Reserve (reserve_pct) for high-risk student interventions
         3. Target schools with high dropout risk but decent potential
         """
+        df = df.copy()
+        
         # Split budget
         standard_budget = budget * (1 - reserve_pct)
         emergency_reserve = budget * reserve_pct
         
-        total_expected = df['expected_graduates'].sum()
+        # Calculate funding need per school
+        df['funding_need'] = df['pell_students'] * 5000
+        df['funding_need'] = df['funding_need'].clip(upper=max_per_school)
         
         # Identify high-risk schools for emergency targeting
-        # High risk = low retention but moderate completion potential
         risk_threshold = df['dropout_risk'].quantile(0.70)
         df['emergency_eligible'] = (df['dropout_risk'] >= risk_threshold) & (df['completion_rate'] >= 0.30)
         
+        # Rank by a combined need score (higher risk + higher pell = more need)
+        df['need_score'] = df['expected_graduates'] / df['funding_need'].clip(lower=1)
+        df = df.sort_values('need_score', ascending=False).reset_index(drop=True)
+        
         allocations = []
+        remaining_standard = standard_budget
+        remaining_emergency = emergency_reserve
         total_allocated = 0
         total_graduates = 0
+        total_pell = 0
         emergency_allocated = 0
         students_with_micro_grants = 0
+        total_enrollment_impact = 0
         
         for _, row in df.iterrows():
-            # Standard allocation
-            std_alloc = (row['expected_graduates'] / total_expected) * standard_budget
+            if remaining_standard <= 0 and remaining_emergency <= 0:
+                break
             
-            # Emergency micro-grant allocation for high-risk schools
+            std_alloc = min(row['funding_need'], remaining_standard, max_per_school)
+            
             emergency_alloc = 0
             micro_grant_students = 0
             
-            if row['emergency_eligible']:
-                # Allocate emergency funds proportional to at-risk Pell students
+            if row['emergency_eligible'] and remaining_emergency > 0:
                 at_risk_students = int(row['pell_students'] * row['dropout_risk'])
-                eligible_total = df[df['emergency_eligible']]['pell_students'].sum()
-                if eligible_total > 0:
-                    emergency_alloc = (row['pell_students'] / eligible_total) * emergency_reserve
-                    # Micro-grants of ~$1000 per at-risk student
-                    micro_grant_students = min(at_risk_students, int(emergency_alloc / 1000))
+                emergency_alloc = min(at_risk_students * 1000, remaining_emergency, max_per_school * 0.2)
+                micro_grant_students = min(at_risk_students, int(emergency_alloc / 1000))
             
             allocation = min(std_alloc + emergency_alloc, max_per_school)
-            graduates = row['expected_graduates']
+            if allocation < 10_000:
+                continue
             
-            # Estimate additional retained students from intervention
-            # Assumption: micro-grants improve retention by 10% for recipients
+            # Baseline (no intervention)
+            baseline_grads = int(row['expected_graduates'])
+            
+            # Projected (with grant funding)
+            grad_ratio = allocation / max(row['funding_need'], 1)
+            projected_grads = int(row['expected_graduates'] * min(grad_ratio, 1.0))
+            
+            # Micro-grants improve retention by ~10% for recipients
             additional_retained = int(micro_grant_students * 0.10)
+            projected_grads += additional_retained
+            
+            # Enrollment impact from price elasticity model
+            grant_per_student = allocation / max(row['pell_students'], 1)
+            enrollment = self.elasticity_model.predict_enrollment_change(
+                current_enrollment=int(row.get('student_size', 1000)),
+                current_net_price=float(row.get('net_price_low_income', 15000) or 15000),
+                grant_change=grant_per_student,
+                pell_rate=float(row.get('pell_rate', 0.35)),
+                admission_rate=float(row.get('admission_rate', 0.5) or 0.5),
+            )
+            enroll_change = enrollment['enrollment_change']
+            additional_grads = int(enroll_change * row['completion_rate'] * row['pell_rate'])
+            projected_grads += additional_grads
+            
+            cost_per_grad = allocation / projected_grads if projected_grads > 0 else 0
             
             allocations.append({
                 'school_id': int(row.get('id', 0)),
@@ -582,22 +738,30 @@ class PellGrantOptimizer:
                 'standard_allocation': round(std_alloc, 2),
                 'emergency_allocation': round(emergency_alloc, 2),
                 'emergency_eligible': bool(row['emergency_eligible']),
-                'dropout_risk': round(row['dropout_risk'], 3),
+                'dropout_risk': round(float(row['dropout_risk']), 3),
                 'micro_grant_recipients': micro_grant_students,
                 'additional_retained': additional_retained,
                 'pell_students': int(row['pell_students']),
                 'completion_rate': round(row['completion_rate'], 3),
-                'expected_graduates': int(graduates)
+                'baseline_graduates': baseline_grads,
+                'projected_graduates': projected_grads,
+                'graduate_delta': projected_grads - baseline_grads,
+                'expected_graduates': projected_grads,
+                'enrollment_impact': enroll_change,
+                'cost_per_graduate': round(cost_per_grad, 2),
             })
             
+            remaining_standard -= std_alloc
+            remaining_emergency -= emergency_alloc
             total_allocated += allocation
-            total_graduates += graduates
+            total_graduates += projected_grads
+            total_pell += int(row['pell_students'])
             emergency_allocated += emergency_alloc
             students_with_micro_grants += micro_grant_students
+            total_enrollment_impact += enroll_change
         
         allocations.sort(key=lambda x: x['allocation'], reverse=True)
         
-        # Calculate lift from emergency interventions
         intervention_lift = sum(a['additional_retained'] for a in allocations)
         
         return {
@@ -609,11 +773,14 @@ class PellGrantOptimizer:
             'emergency_eligible_schools': int(df['emergency_eligible'].sum()),
             'students_with_micro_grants': students_with_micro_grants,
             'intervention_lift': intervention_lift,
-            'budget_utilization': round(total_allocated / budget, 4),
+            'budget_utilization': round(total_allocated / budget, 4) if budget > 0 else 0,
             'schools_funded': len(allocations),
+            'total_pell_students': total_pell,
             'total_expected_graduates': int(total_graduates),
-            'total_graduates_with_lift': int(total_graduates + intervention_lift),
-            'allocations': allocations[:30]
+            'total_enrollment_impact': total_enrollment_impact,
+            'total_graduates_with_lift': int(total_graduates),
+            'avg_cost_per_graduate': round(total_allocated / total_graduates, 2) if total_graduates > 0 else 0,
+            'allocations': allocations[:30],
         }
     
     def compare_strategies(self, budget: float = 50_000_000) -> dict:

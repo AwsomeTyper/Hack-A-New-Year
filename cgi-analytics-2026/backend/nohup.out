@@ -1262,3 +1262,94 @@ INFO:     Shutting down
 INFO:     Waiting for application shutdown.
 INFO:     Application shutdown complete.
 INFO:     Finished server process [84487]
+INFO:     Will watch for changes in these directories: ['/Users/calebmorgan/Hack-A-New-Year/cgi-analytics-2026/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [26364] using StatReload
+INFO:     Started server process [26432]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:52502 - "GET /api/optimize/enrollment?budget=50000000&strategy=base HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52520 - "GET /api/metrics/purchasing-power HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52522 - "GET /api/metrics/completion-gap?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52523 - "GET /api/predict/viability HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52525 - "GET /api/predict/elasticity?grant_change=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52526 - "GET /api/metrics/equity-performance?limit=400 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52526 - "GET /api/metrics/equity-performance?limit=5000&student_size_min=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52525 - "GET /api/optimize/enrollment?budget=50000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52523 - "GET /api/optimize/enrollment?budget=50000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52522 - "GET /api/metrics/equity-performance?limit=5000&student_size_min=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52526 - "GET /api/optimize/enrollment?budget=50000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52525 - "GET /api/optimize/enrollment?budget=50000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52529 - "GET /api/optimize/enrollment?budget=35000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52530 - "GET /api/optimize/enrollment?budget=35000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52530 - "GET /api/optimize/enrollment?budget=20000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52529 - "GET /api/optimize/enrollment?budget=20000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52529 - "GET /api/optimize/enrollment?budget=75000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52530 - "GET /api/optimize/enrollment?budget=75000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52530 - "GET /api/optimize/enrollment?budget=90000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52529 - "GET /api/optimize/enrollment?budget=90000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52529 - "GET /api/optimize/enrollment?budget=100000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52530 - "GET /api/optimize/enrollment?budget=100000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52530 - "GET /api/optimize/enrollment?budget=15000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52529 - "GET /api/optimize/enrollment?budget=15000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52529 - "GET /api/optimize/enrollment?budget=10000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52530 - "GET /api/optimize/enrollment?budget=10000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52530 - "GET /api/optimize/enrollment?budget=70000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52529 - "GET /api/optimize/enrollment?budget=70000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52537 - "GET /api/optimize/enrollment?budget=100000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52538 - "GET /api/optimize/enrollment?budget=100000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52538 - "GET /api/optimize/enrollment?budget=60000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52537 - "GET /api/optimize/enrollment?budget=60000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52537 - "GET /api/optimize/enrollment?budget=30000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52538 - "GET /api/optimize/enrollment?budget=30000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52538 - "GET /api/optimize/enrollment?budget=15000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52537 - "GET /api/optimize/enrollment?budget=15000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52537 - "GET /api/optimize/enrollment?budget=10000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52538 - "GET /api/optimize/enrollment?budget=10000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52538 - "GET /api/optimize/enrollment?budget=95000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52537 - "GET /api/optimize/enrollment?budget=95000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52537 - "GET /api/optimize/enrollment?budget=100000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52538 - "GET /api/optimize/enrollment?budget=100000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52538 - "GET /api/optimize/enrollment?budget=10000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52537 - "GET /api/optimize/enrollment?budget=10000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52537 - "GET /api/optimize/enrollment?budget=10000000&strategy=base HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52537 - "GET /api/optimize/enrollment?budget=20000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52546 - "GET /api/optimize/enrollment?budget=20000000&strategy=base HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52546 - "GET /api/optimize/enrollment?budget=80000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52537 - "GET /api/optimize/enrollment?budget=80000000&strategy=base HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52537 - "GET /api/optimize/enrollment?budget=100000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52546 - "GET /api/optimize/enrollment?budget=100000000&strategy=base HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52546 - "GET /api/optimize/enrollment?budget=75000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52537 - "GET /api/optimize/enrollment?budget=75000000&strategy=base HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52537 - "GET /api/optimize/enrollment?budget=100000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52546 - "GET /api/optimize/enrollment?budget=100000000&strategy=base HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'optimizer.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [26432]
+INFO:     Started server process [27477]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:52731 - "GET /api/metrics/purchasing-power HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52733 - "GET /api/metrics/completion-gap?limit=100 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52734 - "GET /api/predict/viability HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52736 - "GET /api/predict/elasticity?grant_change=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52737 - "GET /api/metrics/equity-performance?limit=400 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52737 - "GET /api/metrics/equity-performance?limit=5000&student_size_min=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52736 - "GET /api/optimize/enrollment?budget=50000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52734 - "GET /api/optimize/enrollment?budget=50000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52733 - "GET /api/metrics/equity-performance?limit=5000&student_size_min=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52737 - "GET /api/optimize/enrollment?budget=50000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52736 - "GET /api/optimize/enrollment?budget=50000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52744 - "GET /api/optimize/enrollment?budget=50000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52745 - "GET /api/optimize/enrollment?budget=50000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52757 - "GET /api/metrics/equity-performance?limit=5000&student_size_min=1000 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52758 - "GET /api/optimize/enrollment?budget=50000000&compare=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52759 - "GET /api/optimize/enrollment?budget=50000000&strategy=retention_trigger HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     127.0.0.1:52761 - "GET /api/metrics/equity-performance?limit=5000&student_size_min=1000 HTTP/1.1" 200 OK
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [27477]
+INFO:     Stopping reloader process [26364]

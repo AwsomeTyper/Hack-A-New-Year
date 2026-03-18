@@ -1,18 +1,16 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { MapPin } from 'lucide-react';
+import InfoTooltip from '@/components/ui/InfoTooltip';
 
-interface School {
-  id: number;
-  'school.name': string;
-  'school.state': string;
-  resilience_risk_index?: number;
-}
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-interface StateRiskChartProps {
-  schools: School[];
+interface StateRiskEntry {
+  state: string;
+  count: number;
+  avgRisk: number;
 }
 
 function getRiskColor(score: number): string {
@@ -23,46 +21,68 @@ function getRiskColor(score: number): string {
   return '#10b981';
 }
 
-export default function StateRiskChart({ schools }: StateRiskChartProps) {
-  // Aggregate by state
-  const stateData = useMemo(() => {
-    const byState: Record<string, { count: number; totalRisk: number; avgRisk: number }> = {};
-    
-    schools.forEach(school => {
-      const state = school['school.state'];
-      if (!state) return;
-      
-      if (!byState[state]) {
-        byState[state] = { count: 0, totalRisk: 0, avgRisk: 0 };
+export default function StateRiskChart() {
+  const [stateData, setStateData] = useState<StateRiskEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await fetch(`${API_BASE}/api/predict/viability?limit=200`);
+        if (!res.ok) throw new Error('Failed to fetch viability');
+        const data = await res.json();
+        
+        // Aggregate by state
+        const byState: Record<string, { count: number; totalRisk: number }> = {};
+        
+        for (const school of data.at_risk_institutions || []) {
+          const state = school['school.state'];
+          if (!state) continue;
+          if (!byState[state]) {
+            byState[state] = { count: 0, totalRisk: 0 };
+          }
+          byState[state].count++;
+          // Convert viability score to risk score (invert: lower viability = higher risk)
+          byState[state].totalRisk += (100 - (school.viability_score || 50));
+        }
+        
+        const aggregated = Object.entries(byState)
+          .map(([state, d]) => ({
+            state,
+            count: d.count,
+            avgRisk: d.totalRisk / d.count,
+          }))
+          .sort((a, b) => b.avgRisk - a.avgRisk)
+          .slice(0, 15);
+        
+        setStateData(aggregated);
+      } catch (err) {
+        console.error('Failed to fetch state risk data:', err);
+      } finally {
+        setLoading(false);
       }
-      
-      byState[state].count++;
-      byState[state].totalRisk += school.resilience_risk_index || 50;
-    });
-    
-    // Calculate averages and convert to array
-    return Object.entries(byState)
-      .map(([state, data]) => ({
-        state,
-        count: data.count,
-        avgRisk: data.totalRisk / data.count,
-      }))
-      .sort((a, b) => b.avgRisk - a.avgRisk)
-      .slice(0, 15); // Top 15 riskiest states
-  }, [schools]);
+    }
+    fetchData();
+  }, []);
+
+  const criticalCount = useMemo(() => stateData.filter(s => s.avgRisk >= 70).length, [stateData]);
+  const atRiskCount = useMemo(() => stateData.filter(s => s.avgRisk >= 50 && s.avgRisk < 70).length, [stateData]);
+  const stableCount = useMemo(() => stateData.filter(s => s.avgRisk < 50).length, [stateData]);
+
+  if (loading || stateData.length === 0) return null;
   
   return (
-    <div className="card col-span-6 animate-in">
+    <div>
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h3 className="text-sm font-medium uppercase tracking-wide" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            Risk by State
-          </h3>
-          <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.3)' }}>
-            Top 15 highest-risk states (avg Resilience Risk Index)
-          </p>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-lg bg-[var(--accent-red)]/10 flex items-center justify-center">
+              <MapPin className="text-[var(--accent-red)]" size={20} />
+            </div>
+            <h3 className="text-title">State Risk Distribution<InfoTooltip text="Aggregated from institutional viability scores (inverted: lower viability = higher risk). Shows the 15 states with the highest average risk among at-risk institutions." /></h3>
+          </div>
+          <p className="text-caption">Top 15 highest-risk states (avg Resilience Risk Index)</p>
         </div>
-        <MapPin size={20} style={{ color: 'rgba(255,255,255,0.3)' }} />
       </div>
       
       {/* Bar Chart */}
@@ -91,15 +111,10 @@ export default function StateRiskChart({ schools }: StateRiskChartProps) {
                 if (active && payload && payload.length) {
                   const data = payload[0].payload;
                   return (
-                    <div style={{ 
-                      background: 'rgba(0,0,0,0.9)', 
-                      border: '1px solid rgba(255,255,255,0.2)',
-                      borderRadius: 8,
-                      padding: '8px 12px'
-                    }}>
-                      <p style={{ color: 'white', fontWeight: 600 }}>{data.state}</p>
-                      <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: 12 }}>
-                        Risk: {data.avgRisk.toFixed(1)} • {data.count} schools
+                    <div className="chart-tooltip">
+                      <p className="text-title text-[var(--text-primary)]">{data.state}</p>
+                      <p className="text-caption">
+                        Risk Score: {data.avgRisk.toFixed(1)} • {data.count} at-risk institutions
                       </p>
                     </div>
                   );
@@ -127,19 +142,19 @@ export default function StateRiskChart({ schools }: StateRiskChartProps) {
       <div className="mt-4 flex gap-4">
         <div className="flex-1 text-center p-2 rounded-lg" style={{ background: 'rgba(227,25,55,0.1)' }}>
           <p className="text-lg font-bold" style={{ color: '#E31937' }}>
-            {stateData.filter(s => s.avgRisk >= 70).length}
+            {criticalCount}
           </p>
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>Critical States</p>
         </div>
         <div className="flex-1 text-center p-2 rounded-lg" style={{ background: 'rgba(251,191,36,0.1)' }}>
           <p className="text-lg font-bold" style={{ color: '#fbbf24' }}>
-            {stateData.filter(s => s.avgRisk >= 50 && s.avgRisk < 70).length}
+            {atRiskCount}
           </p>
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>At-Risk States</p>
         </div>
         <div className="flex-1 text-center p-2 rounded-lg" style={{ background: 'rgba(16,185,129,0.1)' }}>
           <p className="text-lg font-bold" style={{ color: '#10b981' }}>
-            {stateData.filter(s => s.avgRisk < 50).length}
+            {stableCount}
           </p>
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>Stable States</p>
         </div>

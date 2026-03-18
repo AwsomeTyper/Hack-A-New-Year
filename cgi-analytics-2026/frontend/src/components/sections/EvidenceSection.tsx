@@ -1,15 +1,17 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
-import { fetchEquityPerformance } from '@/lib/api';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'motion/react';
+import { fetchEquityPerformance, fetchVerticalEquity, fetchModelMetrics, VerticalEquityData, type ModelMetrics } from '@/lib/api';
 import { 
   AreaChart, Area, BarChart, Bar, ScatterChart, Scatter,
   XAxis, YAxis, CartesianGrid, Tooltip, 
   ResponsiveContainer, Cell, ReferenceLine, ZAxis
 } from 'recharts';
-import { TrendingDown, AlertTriangle, Building2, Award, Filter, Target } from 'lucide-react';
+import { TrendingDown, Building2, Award, Target, DollarSign, Filter } from 'lucide-react';
 import { RangeSlider } from '@/components/ui/RangeSlider';
+import InfoTooltip from '@/components/ui/InfoTooltip';
+import StateRiskChart from '@/components/StateRiskChart';
 
 interface PurchasingPowerPoint {
   year: number;
@@ -29,8 +31,8 @@ interface CompletionGapInstitution {
 interface EvidenceSectionProps {
   purchasingPowerData: PurchasingPowerPoint[];
   completionGapData: CompletionGapInstitution[];
-  atRiskCount: number;
-  avgCompletionGap: number;
+  atRiskCount?: number;
+  avgCompletionGap?: number;
   totalErosion: number;
   viabilitySummary?: {
     critical_count: number;
@@ -88,8 +90,7 @@ const ChartTooltip = (props: any) => {
 export default function EvidenceSection({
   purchasingPowerData = [],
   completionGapData = [],
-  atRiskCount = 0,
-  avgCompletionGap = 0,
+  // atRiskCount and avgCompletionGap are passed from page.tsx but not directly rendered
   totalErosion = -36,
   viabilitySummary,
   elasticityImpact = 370000,
@@ -103,8 +104,7 @@ export default function EvidenceSection({
     : 0;
 
 
-  // State filter for Pell Gap chart
-  const [selectedState, setSelectedState] = useState<string>('all');
+
   
   // State filter for Equity Matrix scatter plot
   const [matrixState, setMatrixState] = useState<string>('all');
@@ -171,20 +171,20 @@ export default function EvidenceSection({
     loadMatrixData();
   }, [matrixState, debouncedSearch, quadrantFilter, selectedCollegeTypes, selectedOwnerships, pellRateRange, studentSizeRange, instructionalSpendRange, equityPerformanceData]);
   
-  // Extract unique states from data
-  const availableStates = useMemo(() => {
-    const states = new Set<string>();
-    completionGapData.forEach(d => {
-      if (d.state) states.add(d.state);
-    });
-    return ['all', ...Array.from(states).sort()];
-  }, [completionGapData]);
+  // Vertical Equity data
+  const [verticalEquityData, setVerticalEquityData] = useState<VerticalEquityData | null>(null);
   
-  // Filter data by selected state
-  const filteredGapData = useMemo(() => {
-    if (selectedState === 'all') return completionGapData;
-    return completionGapData.filter(d => d.state === selectedState);
-  }, [completionGapData, selectedState]);
+  // Model performance metrics
+  const [modelMetrics, setModelMetrics] = useState<ModelMetrics | null>(null);
+  
+  useEffect(() => {
+    fetchVerticalEquity()
+      .then(setVerticalEquityData)
+      .catch(err => console.error('Failed to fetch vertical equity:', err));
+    fetchModelMetrics()
+      .then(setModelMetrics)
+      .catch(err => console.error('Failed to fetch model metrics:', err));
+  }, []);
   
   // Matrix available states (from API response - use initial data for full list)
   const matrixAvailableStates = useMemo(() => {
@@ -285,7 +285,7 @@ export default function EvidenceSection({
 
   return (
     <section id="evidence" className="section bg-[var(--bg-surface)]">
-      <div className="container">
+      <div className="page-container">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -297,7 +297,7 @@ export default function EvidenceSection({
           <span className="text-label text-[var(--accent-red)] mb-4 block">THE EVIDENCE</span>
           <h2 className="text-section mb-4">The Problem at Scale</h2>
           <p className="text-body max-w-2xl mx-auto">
-            Critical metrics across {atRiskCount > 0 ? atRiskCount.toLocaleString() : '1,800'} institutions reveal systemic failure in federal higher education investment.
+            Descriptive and predictive metrics across {totalInstitutions > 0 ? totalInstitutions.toLocaleString() : '1,810'} institutions<InfoTooltip text="Institution-level data sourced from the U.S. Department of Education College Scorecard API (Data.gov). Updated annually with the most recent cohort data." /> highlight structural inefficiencies in federal higher education investment.
           </p>
         </motion.div>
 
@@ -308,6 +308,7 @@ export default function EvidenceSection({
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -5 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.6, delay: 0.1 }}
             className="card col-span-2"
@@ -320,11 +321,11 @@ export default function EvidenceSection({
                   </div>
                   <h3 className="text-title">Purchasing Power Erosion</h3>
                 </div>
-                <p className="text-caption">Maximum Pell Grant as % of average Cost of Attendance (1974-2024)</p>
+                <p className="text-caption">Maximum Pell Grant as % of average Cost of Attendance (1974–2024)<InfoTooltip text="Calculated by dividing the maximum Pell Grant award each year by the average published Cost of Attendance at 4-year public institutions. Source: College Board & Dept. of Education." /></p>
               </div>
               <div className="text-right">
                 <div className="stat-value stat-crisis">{totalErosion}%</div>
-                <p className="text-caption">Total Erosion</p>
+                <p className="text-caption">Total Erosion<InfoTooltip text="The percentage-point decline from the 1975 peak coverage (61%) to today's coverage (~25%)." /></p>
               </div>
             </div>
             
@@ -376,6 +377,7 @@ export default function EvidenceSection({
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -5 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="card flex flex-col justify-between"
@@ -385,7 +387,7 @@ export default function EvidenceSection({
                 <Building2 className="text-[var(--accent-blue)]" size={22} />
               </div>
               <h3 className="text-title mb-1">Viability Risk</h3>
-              <p className="text-caption text-sm">Institutional stability forecast</p>
+              <p className="text-caption text-sm">Institutional stability forecast<InfoTooltip text="Composite score based on retention rate (40%), completion rate (30%), Pell grant rate (20%), and admission rate (10%). Critical: failing on 3+ factors. Elevated: failing on 2. Moderate: failing on 1. Stable: passing all thresholds." /></p>
             </div>
             
             {viabilitySummary && totalInstitutions > 0 && (
@@ -426,7 +428,7 @@ export default function EvidenceSection({
             
             {/* Elasticity insight */}
             <div className="mt-4 pt-3 border-t border-[var(--border-subtle)] text-center">
-              <p className="text-caption">Grant Elasticity</p>
+              <p className="text-caption">Grant Elasticity<InfoTooltip text="Estimated additional students who would complete degrees for every $1,000 increase in the maximum Pell Grant, based on regression analysis of net price and completion rates." /></p>
               <p className="text-lg font-semibold text-[var(--accent-emerald)]">
                 +{(elasticityImpact / 1000).toFixed(0)}K students
               </p>
@@ -434,10 +436,72 @@ export default function EvidenceSection({
             </div>
           </motion.div>
 
-          {/* BLOCK 3: Completion Gap Chart */}
+          {/* BLOCK 2b: Model Performance */}
+          {modelMetrics && (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -5 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: 0.25 }}
+              className="card flex flex-col justify-between"
+            >
+              <div className="text-center mb-4">
+                <div className="w-12 h-12 rounded-xl bg-[var(--accent-purple)]/10 flex items-center justify-center mx-auto mb-3">
+                  <Award className="text-[var(--accent-purple)]" size={22} />
+                </div>
+                <h3 className="text-title mb-1">Model Performance</h3>
+                <p className="text-caption text-sm">Validated predictive accuracy<InfoTooltip text="All models are trained on real College Scorecard data. R² measures the proportion of variance explained by the model. AUC measures discriminative ability (1.0 = perfect, 0.5 = random)." /></p>
+              </div>
+              
+              <div className="space-y-3">
+                {modelMetrics.models.map((model, idx) => (
+                  <div key={idx} className="bg-[var(--bg-elevated)] rounded-lg p-3">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-xs font-medium text-[var(--text-secondary)]">{model.name}</span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--bg-void)] text-[var(--text-muted)]">{model.type}</span>
+                    </div>
+                    {model.r_squared !== undefined && model.r_squared !== null && (
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-lg font-bold text-[var(--accent-emerald)]">{model.r_squared}</span>
+                        <span className="text-xs text-[var(--text-muted)]">R²</span>
+                        {model.schools_analyzed && (
+                          <span className="text-xs text-[var(--text-muted)] ml-auto">{model.schools_analyzed.toLocaleString()} schools</span>
+                        )}
+                      </div>
+                    )}
+                    {model.cv_auc !== undefined && model.cv_auc !== null && (
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-lg font-bold text-[var(--accent-blue)]">{model.cv_auc}</span>
+                        <span className="text-xs text-[var(--text-muted)]">Accuracy</span>
+                      </div>
+                    )}
+                    {model.base_elasticity !== undefined && (
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-lg font-bold text-[var(--accent-amber)]">{model.base_elasticity}</span>
+                        <span className="text-xs text-[var(--text-muted)]">base elasticity</span>
+                      </div>
+                    )}
+                    {model.factors && (
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {Object.entries(model.factors).map(([k, v]) => (
+                          <span key={k} className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--bg-void)] text-[var(--text-muted)]">
+                            {k.replace(/_/g, ' ')}: {v}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* BLOCK 3: Vertical Equity Analysis */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -5 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.6, delay: 0.3 }}
             className="card col-span-2"
@@ -445,77 +509,139 @@ export default function EvidenceSection({
             <div className="flex items-start justify-between mb-6">
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-lg bg-[var(--accent-red)]/10 flex items-center justify-center">
-                    <AlertTriangle className="text-[var(--accent-red)]" size={20} />
+                  <div className="w-10 h-10 rounded-lg bg-[var(--accent-amber)]/10 flex items-center justify-center">
+                    <DollarSign className="text-[var(--accent-amber)]" size={20} />
                   </div>
-                  <h3 className="text-title">Pell Gap by Institution</h3>
+                  <h3 className="text-title">Vertical Equity Analysis</h3>
                 </div>
-                <p className="text-caption">Pell vs. Non-Pell 6-year graduation rate difference</p>
+                <p className="text-caption">Does Pell aid reach the students who need it most?</p>
               </div>
-              <div className="flex items-center gap-4">
-                {/* State Filter */}
-                <div className="flex items-center gap-2">
-                  <Filter size={16} className="text-[var(--text-muted)]" />
-                  <select
-                    value={selectedState}
-                    onChange={(e) => setSelectedState(e.target.value)}
-                    className="bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-lg px-3 py-1.5 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-blue)]"
-                  >
-                    {availableStates.map(state => (
-                      <option key={state} value={state}>
-                        {state === 'all' ? 'All States' : state}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              {verticalEquityData && (
                 <div className="text-right">
-                  <div className="stat-value stat-crisis">{avgCompletionGap > 0 ? '+' : ''}{avgCompletionGap.toFixed(1)}%</div>
-                  <p className="text-caption">Average Gap</p>
+                  <div className="stat-value stat-crisis">${verticalEquityData.avg_unmet_need.toLocaleString()}</div>
+                  <p className="text-caption">Avg Unmet Need</p>
                 </div>
-              </div>
+              )}
             </div>
             
-            <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart 
-                  data={filteredGapData.slice(0, 12)}
-                  layout="vertical"
-                  margin={{ left: 10, right: 20 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" horizontal={false} />
-                  <XAxis 
-                    type="number"
-                    domain={[-30, 30]}
-                    tickFormatter={(v) => `${v}%`}
-                    stroke="rgba(255,255,255,0.3)"
-                    tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 11 }}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <YAxis 
-                    type="category" 
-                    dataKey="name"
-                    width={180}
-                    tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 11 }}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <Tooltip content={ChartTooltip} />
-                  <ReferenceLine x={0} stroke="rgba(255,255,255,0.2)" />
-                  <Bar 
-                    dataKey="gap_pct" 
-                    radius={[0, 4, 4, 0]}
-                  >
-                    {filteredGapData.slice(0, 12).map((entry, index) => (
-                      <Cell 
-                        key={`cell-${index}`} 
-                        fill={entry.gap_pct < 0 ? '#E31937' : '#10b981'} 
+            {verticalEquityData ? (
+              <>
+                {/* KPI Row */}
+                <div className="grid grid-cols-3 gap-4 mb-6">
+                  <div className="bg-[var(--bg-elevated)] rounded-xl p-3 text-center">
+                    <p className="text-xs text-[var(--text-muted)] mb-1">Max Pell Award<InfoTooltip text="The maximum Federal Pell Grant for the 2024–25 award year." /></p>
+                    <p className="text-lg font-bold text-[var(--accent-emerald)]">${verticalEquityData.max_pell_award.toLocaleString()}</p>
+                  </div>
+                  <div className="bg-[var(--bg-elevated)] rounded-xl p-3 text-center">
+                    <p className="text-xs text-[var(--text-muted)] mb-1">Pell Insufficient<InfoTooltip text="Percentage of institutions where the average net price for the lowest-income students ($0–30k) exceeds the maximum Pell Grant award." /></p>
+                    <p className="text-lg font-bold text-[var(--accent-red)]">{verticalEquityData.pct_pell_insufficient}%</p>
+                    <p className="text-xs text-[var(--text-muted)]">of schools</p>
+                  </div>
+                  <div className="bg-[var(--bg-elevated)] rounded-xl p-3 text-center">
+                    <p className="text-xs text-[var(--text-muted)] mb-1">Equity Ratio<InfoTooltip text="Average net price for the lowest-income bracket divided by the highest-income bracket. Values below 1.0 indicate progressive pricing (lower costs for poorer students). The gap shows how much still falls through." /></p>
+                    <p className="text-lg font-bold text-[var(--accent-amber)]">{verticalEquityData.equity_ratio ?? 'N/A'}</p>
+                    <p className="text-xs text-[var(--text-muted)]">low / high income</p>
+                  </div>
+                </div>
+
+                {/* Bar chart: Net Price by Income Bracket */}
+                <p className="text-xs text-[var(--text-muted)] mb-2 font-medium uppercase tracking-wider">Average Net Price by Family Income</p>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={verticalEquityData.bracket_averages}
+                      margin={{ left: 10, right: 80, top: 10, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                      <XAxis
+                        dataKey="bracket"
+                        stroke="rgba(255,255,255,0.3)"
+                        tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 11 }}
+                        tickLine={false}
+                        axisLine={false}
                       />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+                      <YAxis
+                        tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
+                        stroke="rgba(255,255,255,0.3)"
+                        tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 11 }}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Tooltip
+                        cursor={{ fill: 'rgba(255,255,255,0.04)' }}
+                        content={({ active, payload }) => {
+                          if (active && payload && payload.length) {
+                            const d = payload[0].payload;
+                            const exceedsPell = d.avg_net_price > verticalEquityData!.max_pell_award;
+                            return (
+                              <div className="chart-tooltip">
+                                <p className="text-caption mb-1">{d.bracket} Family Income</p>
+                                <p className="text-title text-[var(--text-primary)]">
+                                  ${d.avg_net_price.toLocaleString()} avg net price
+                                </p>
+                                <p className="text-xs text-[var(--text-muted)] mt-1">
+                                  Median: ${d.median_net_price.toLocaleString()} · {d.count.toLocaleString()} schools
+                                </p>
+                                {exceedsPell && (
+                                  <p className="text-xs text-[var(--accent-red)] mt-1 font-medium">
+                                    Exceeds Max Pell by ${(d.avg_net_price - verticalEquityData!.max_pell_award).toLocaleString()}
+                                  </p>
+                                )}
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                      <ReferenceLine
+                        y={verticalEquityData.max_pell_award}
+                        stroke="#10b981"
+                        strokeDasharray="6 4"
+                        strokeWidth={2}
+                        label={{
+                          value: `Max Pell: $${verticalEquityData.max_pell_award.toLocaleString()}`,
+                          position: 'insideTopRight',
+                          fill: '#10b981',
+                          fontSize: 11,
+                          fontWeight: 600,
+                        }}
+                      />
+                      <Bar dataKey="avg_net_price" radius={[6, 6, 0, 0]}>
+                        {verticalEquityData.bracket_averages.map((entry, index) => (
+                          <Cell
+                            key={`cell-ve-${index}`}
+                            fill={entry.avg_net_price > verticalEquityData!.max_pell_award
+                              ? '#E31937'
+                              : '#10b981'
+                            }
+                            fillOpacity={0.85}
+                          />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+                <p className="text-xs text-[var(--text-muted)] mt-3 text-center italic">
+                  Red bars exceed the maximum Pell Grant — students must cover the gap with loans or work
+                </p>
+              </>
+            ) : (
+              <div className="h-64 flex items-center justify-center">
+                <p className="text-caption">Loading vertical equity data...</p>
+              </div>
+            )}
+          </motion.div>
+
+          {/* BLOCK 3b: State Risk Distribution */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            whileHover={{ y: -5 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6, delay: 0.35 }}
+            className="card col-span-2"
+          >
+            <StateRiskChart />
           </motion.div>
 
           {/* BLOCK 4: Key Insight */}
@@ -529,13 +655,23 @@ export default function EvidenceSection({
             <h3 className="text-title mb-4">The Core Problem</h3>
             <p className="text-body mb-4">
               Universities receive Pell dollars based on <strong className="text-[var(--text-primary)]">enrollment</strong>, 
-              not <strong className="text-[var(--text-primary)]">completion</strong>.
+              not <strong className="text-[var(--text-primary)]">completion</strong>.<InfoTooltip text="Under current rules, schools receive Pell disbursements when students enroll. There is no financial clawback if those students drop out before earning a degree." />
             </p>
             <p className="text-caption">
-              This incentivizes aggressive recruiting over student success—effectively 
-              subsidizing failure at low-performing institutions.
+              This can incentivize recruiting volume over student support, particularly at institutions with low completion rates.
             </p>
           </motion.div>
+
+          {/* Narrative Transition */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="col-span-full text-center text-body text-[var(--text-muted)] my-6 max-w-2xl mx-auto italic"
+          >
+            The data above reveals the systemic problem. But which institutions are actually beating the odds — and which need intervention?
+          </motion.p>
 
           {/* BLOCK 5: Pell Gap vs Bending the Curve Scatter Plot */}
           {equityPerformanceData && equityPerformanceData.schools.length > 0 && (
@@ -544,11 +680,11 @@ export default function EvidenceSection({
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: 0.45 }}
-              className="card col-span-3"
+              className="card col-span-full"
             >
               <div className="flex items-center gap-3 mb-2">
                 <Target className="w-6 h-6 text-[var(--accent-purple)]" />
-                <h3 className="text-title">Equity vs. Excellence Matrix</h3>
+                <h3 className="text-title">Equity vs. Excellence Matrix<InfoTooltip text="Each dot represents one institution. X-axis measures the completion gap between Pell and non-Pell students. Y-axis measures 'Bending the Curve'—how much actual completion exceeds the prediction from an OLS model of comparable schools. Dot size reflects enrollment." /></h3>
               </div>
               <p className="text-caption mb-4">
                 Comparing Pell Gap (equity) with &ldquo;Bending the Curve&rdquo; (value-add). 
@@ -632,7 +768,7 @@ export default function EvidenceSection({
                   </select>
                 </div>
                 
-                <div className="relative flex-1 max-w-xs">
+                <div className="relative flex-1 min-w-0 max-w-xs">
                   <input
                     type="text"
                     value={searchTerm}
@@ -946,7 +1082,7 @@ export default function EvidenceSection({
               </div>
               
               <p className="text-caption mt-4 text-center">
-                Correlation: r = {equityPerformanceData.summary.correlation?.toFixed(3) || 'N/A'} 
+                Correlation: r = {equityPerformanceData.summary.correlation?.toFixed(3) || 'N/A'}<InfoTooltip text="Pearson's r measures the linear relationship between the two axes. Values near 0 mean equity and excellence are largely independent dimensions—a school can excel at one without the other." />{' '}
                 (These dimensions are largely independent)
               </p>
               
@@ -1017,7 +1153,7 @@ export default function EvidenceSection({
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="card col-span-3"
+              className="card col-span-full"
             >
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-lg bg-[var(--accent-emerald)]/10 flex items-center justify-center">
@@ -1025,7 +1161,7 @@ export default function EvidenceSection({
                 </div>
                 <div>
                   <h3 className="text-title">Equity Engines</h3>
-                  <p className="text-caption">Schools breaking the income-achievement correlation</p>
+                  <p className="text-caption">Schools breaking the income-achievement correlation<InfoTooltip text="Institutions where Pell Grant recipients complete at the same rate or higher than non-Pell students, demonstrating that income does not have to predict outcomes." /></p>
                 </div>
               </div>
               

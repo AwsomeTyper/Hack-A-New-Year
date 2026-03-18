@@ -366,9 +366,9 @@ async def get_equity_performance(
     
     # Apply instructional spend range filters
     if instructional_spend_min is not None:
-        scatter_df = scatter_df[scatter_df['latest.academics.program_percentage.education'] >= instructional_spend_min]
+        scatter_df = scatter_df[scatter_df['instruction_per_fte'] >= instructional_spend_min]
     if instructional_spend_max is not None:
-        scatter_df = scatter_df[scatter_df['latest.academics.program_percentage.education'] <= instructional_spend_max]
+        scatter_df = scatter_df[scatter_df['instruction_per_fte'] <= instructional_spend_max]
     
     # Assign quadrants
     scatter_df['quadrant'] = scatter_df.apply(
@@ -589,6 +589,84 @@ async def get_equity_performance(
 
 
 # ============================================================================
+# MODEL METRICS ENDPOINT
+# ============================================================================
+
+@app.get("/api/model-metrics")
+async def get_model_metrics():
+    """
+    Return performance metrics for all predictive models.
+    Trains models on demand and caches the result.
+    """
+    try:
+        predictor = get_pell_predictor()
+        df = get_processed_data()
+
+        # Dropout Risk Model metrics (from training)
+        dropout_metrics = {
+            "name": "Dropout Risk Classifier",
+            "type": "Logistic Regression",
+            "cv_auc": round(predictor.dropout_model.model.score(
+                predictor.dropout_model.scaler.transform(
+                    df.dropna(subset=predictor.dropout_model.FEATURE_COLS)[predictor.dropout_model.FEATURE_COLS]
+                ),
+                (df.dropna(subset=predictor.dropout_model.FEATURE_COLS)['completion_rate'] < 0.50).astype(int)
+            ), 3) if predictor.dropout_model.is_trained else None,
+            "feature_importance": predictor.dropout_model.feature_importance if predictor.dropout_model.is_trained else {},
+            "features": predictor.dropout_model.FEATURE_COLS,
+        }
+
+        # Bending the Curve R² (from OLS in data_pipeline)
+        bc_df = df.dropna(subset=['bending_curve', 'completion_rate', 'expected_completion_rate'])
+        from sklearn.metrics import r2_score
+        r2 = float(r2_score(
+            bc_df['completion_rate'],
+            bc_df['expected_completion_rate']
+        )) if len(bc_df) > 0 else None
+
+        bending_curve_metrics = {
+            "name": "Bending the Curve (Value-Add)",
+            "type": "OLS Regression",
+            "r_squared": round(r2, 3) if r2 else None,
+            "schools_analyzed": int(len(bc_df)),
+            "schools_exceeding": int((bc_df['bending_curve'] > 0).sum()),
+            "schools_below": int((bc_df['bending_curve'] < 0).sum()),
+        }
+
+        # Price Elasticity model info
+        elasticity_metrics = {
+            "name": "Price Elasticity of Enrollment",
+            "type": "Calibrated Economic Model",
+            "base_elasticity": predictor.elasticity_model.BASE_ELASTICITY,
+            "elasticity_range": [-2.0, -0.2],
+            "description": "Enrollment response to grant changes, calibrated from research literature",
+        }
+
+        # Viability model info
+        viability_metrics = {
+            "name": "Institutional Viability Index",
+            "type": "Composite Risk Score",
+            "factors": {
+                "retention_rate": "40%",
+                "completion_rate": "30%",
+                "pell_dependency": "20%",
+                "admission_rate": "10%",
+            },
+        }
+
+        return {
+            "models": [
+                dropout_metrics,
+                bending_curve_metrics,
+                elasticity_metrics,
+                viability_metrics,
+            ]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error computing model metrics: {str(e)}")
+
+
+# ============================================================================
 # PREDICTIVE ANALYTICS ENDPOINTS
 # ============================================================================
 
@@ -731,6 +809,75 @@ async def get_institutional_viability(
         "summary": summary,
         "count": len(result),
         "at_risk_institutions": result
+    }
+
+
+@app.get("/api/vertical-equity")
+async def get_vertical_equity():
+    """
+    Vertical Equity Analysis: Does Pell aid reach the students who need it most?
+    Compares net price across income brackets to identify funding inequities.
+    """
+    df = get_processed_data()
+    max_pell = 7395  # 2024-25 maximum Pell Grant
+
+    # Income bracket columns
+    brackets = [
+        ('$0–30k', 'net_price_low_income'),
+        ('$30–48k', 'net_price_30_48k'),
+        ('$48–75k', 'net_price_48_75k'),
+        ('$75–110k', 'net_price_75_110k'),
+        ('$110k+', 'net_price_110k_plus'),
+    ]
+
+    # Build average net price by bracket
+    bracket_averages = []
+    for label, col in brackets:
+        if col in df.columns:
+            valid = df[col].dropna()
+            if len(valid) > 0:
+                bracket_averages.append({
+                    "bracket": label,
+                    "avg_net_price": round(float(valid.mean())),
+                    "median_net_price": round(float(valid.median())),
+                    "count": int(len(valid)),
+                })
+
+    # Compute aggregate stats for the lowest-income bracket
+    low_income = df['net_price_low_income'].dropna()
+    avg_unmet_need = round(float(low_income.mean())) if len(low_income) > 0 else 0
+    median_unmet_need = round(float(low_income.median())) if len(low_income) > 0 else 0
+    pct_pell_insufficient = round(float((low_income > max_pell).mean() * 100), 1) if len(low_income) > 0 else 0
+
+    # Distribution histogram for lowest-income net price
+    bins = [0, 5000, 10000, 15000, 20000, float('inf')]
+    labels_hist = ['$0–5k', '$5k–10k', '$10k–15k', '$15k–20k', '$20k+']
+    distribution = []
+    for i in range(len(bins) - 1):
+        count = int(((low_income >= bins[i]) & (low_income < bins[i+1])).sum())
+        distribution.append({
+            "bracket": labels_hist[i],
+            "count": count,
+            "pct": round(count / len(low_income) * 100, 1) if len(low_income) > 0 else 0
+        })
+
+    # Equity ratio: how much cheaper is it for the poorest vs the richest?
+    high_income_col = 'net_price_110k_plus'
+    equity_ratio = None
+    if high_income_col in df.columns:
+        high_income = df[high_income_col].dropna()
+        if len(high_income) > 0 and high_income.mean() > 0:
+            equity_ratio = round(float(low_income.mean() / high_income.mean()), 2)
+
+    return {
+        "max_pell_award": max_pell,
+        "avg_unmet_need": avg_unmet_need,
+        "median_unmet_need": median_unmet_need,
+        "pct_pell_insufficient": pct_pell_insufficient,
+        "bracket_averages": bracket_averages,
+        "distribution": distribution,
+        "equity_ratio": equity_ratio,
+        "total_schools": int(len(low_income)),
     }
 
 

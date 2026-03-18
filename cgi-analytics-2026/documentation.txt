@@ -1,5 +1,5 @@
 PROJECT AEGIS — Pell Grant ROI Analytics
-The Pell Grant once covered 61% of public university costs; today it covers 25%. This $30B annual investment functions as an access voucher rather than a completion investment. Project Aegis turns raw College Scorecard data into an interactive policy brief that diagnoses failures, predicts institutional risk, and prescribes funding reforms for decision-makers.
+The Pell Grant once covered 61% of public university costs; today it covers 25%. This $30B annual investment functions as an access voucher rather than a completion investment. Project Aegis turns raw College Scorecard data into an interactive policy brief that diagnoses structural inefficiencies, predicts institutional risk, and prescribes funding reforms for decision-makers.
 
 DATA SOURCES
   • College Scorecard — U.S. Dept. of Education (Data.gov), 1,810 institutions, 30+ fields
@@ -11,20 +11,37 @@ DATA SOURCES
 
 METHODS & TOOLS
   Backend:  Python 3.13, FastAPI, Pandas, NumPy
-  ML/Stats: OLS Regression (sklearn), XGBoost
-  Optimize: Linear Programming (PuLP)
-  Frontend: Next.js 16, React, Recharts, Framer Motion
+  ML/Stats: OLS Regression (sklearn), XGBoost, Logistic Regression
+  Optimize: Linear Programming (PuLP), fairlearn (bias auditing)
+  Frontend: Next.js 16, React 19, Recharts, Framer Motion, TypeScript
 
-Descriptive: Purchasing Power Gap — Pell max ÷ avg. cost of attendance (50-yr trend); Completion Gap — 6-yr graduation rate: Pell vs. non-Pell, same institution; Vertical Equity — net price vs. Pell rate correlation
-Predictive: Bending the Curve — OLS value-add: actual − expected completion (R²=0.506); Earnings Value-Add — OLS on 10-yr earnings, COL-adjusted via BEA RPP (R²=0.262); Viability Risk — composite index: Pell dependency, completion, admission rate
-Prescriptive: Budget Optimization — LP maximizing graduates under $10M–$100M constraint; Performance Allocation — bonus funding to high value-add institutions; Retention Trigger — emergency micro-grants for at-risk students
+ANALYTICAL TIERS
+
+  Descriptive
+    Purchasing Power Gap — Pell max ÷ avg. cost of attendance, 50-year trend showing erosion from 61% to 25% coverage.
+    Vertical Equity — Net price by family income bracket vs. max Pell award. 85% of institutions charge lowest-income students more than the Pell Grant covers.
+    Viability Risk — Composite institutional stability index: retention rate (40%), completion rate (30%), Pell rate (20%), admission rate (10%). Schools are classified as Critical, Elevated, Moderate, or Stable.
+
+  Predictive
+    Bending the Curve — OLS value-add: actual completion − expected completion, controlling for Pell rate, student size, instructional spend, and Carnegie class (R² = 0.506).
+    Earnings Value-Add — OLS on 10-yr median earnings, COL-adjusted via BEA Regional Price Parities (R² = 0.262).
+    Price Elasticity — Regression-based estimate of additional enrollments per $1,000 increase in grant funding.
+    Dropout Risk Scoring — Logistic regression on unmet need, debt ratios, and institution characteristics to predict which schools are most likely to lose Pell students.
+
+  Prescriptive
+    Budget Optimization — Linear Programming maximizing total graduates under $10M–$100M budget constraint.
+    Three Allocation Strategies — Base (enrollment-proportional), Performance (value-add weighted), Retention Trigger (dropout-risk concentrated).
+    Fairness Auditing — Every optimization is audited via fairlearn for demographic parity and equalized odds, guarding against the "creaming" risk where schools exclude high-need students to boost metrics.
 
 DESIGN CHOICES
   1. Scrolling Policy Brief — reads as a narrative (problem → evidence → solution) to communicate
      findings to non-technical decision-makers and score on Storytelling and Business Value.
   2. Equity-First Metrics — every metric controls for demographics via OLS residuals so schools
      serving disadvantaged populations aren't penalized. Addresses the "Creaming" risk.
-  3. Interactive What-If — budget slider, quadrant filters, and 3 strategy comparisons let users
-     explore trade-offs in real time, demonstrating Innovation and User Experience.
+  3. Interactive What-If — budget slider, scatter plot quadrant filters, X-axis metric switcher,
+     state/college-type filters, and 3 strategy comparisons let users explore trade-offs in real
+     time, demonstrating Innovation and User Experience.
   4. Bias Controls — transfer adjustment (NSCRC), cost-of-living (BEA RPP), Carnegie-class
-     controls, geographic isolation (Haversine), and part-time inclusion ensure analytical rigor (Analytical Depth).
+     controls, geographic isolation (Haversine), and part-time inclusion ensure analytical rigor.
+  5. Transparency — 29 InfoTooltips explain every KPI calculation, data source, and model
+     methodology directly in the interface. No metric goes unexplained.

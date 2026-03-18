@@ -1,0 +1,126 @@
+PROJECT AEGIS ANALYTICS — PRESENTATION SCRIPT
+================================================
+~7 minutes  |  Read on iPad while screen recording on MacBook
+
+
+[0:00] ——— THE HOOK ———
+Show: Hero Section (animated counters)
+
+"In 1972, the federal government made a promise: if you're too poor for college, we'll cover the cost. That program — the Pell Grant — once covered 61% of public university tuition.
+
+Today, it covers 25%.
+
+This dashboard is the story of that broken promise — and a data-driven blueprint to fix it."
+
+    → Pause 2 seconds after "25%" — let the counters land.
+    → Say: "Every number is live — pulled from the College
+       Scorecard API on Data.gov."
+
+
+[0:45] ——— THE EVIDENCE ———
+Show: Evidence Section — scroll slowly through the cards
+
+"We started where every analysis should — by measuring the system as it exists."
+
+PURCHASING POWER EROSION  (point to the Area Chart)
+
+"This chart tracks the ratio of the max Pell Grant to the average cost of attendance over fifty years. The decline is steep and accelerating — coverage has dropped by 36 percentage points."
+
+VIABILITY RISK  (point to the Viability Risk card)
+
+"Next to that, we built an institutional stability forecast. This card scores every institution on a composite index — retention rate weighted 40%, completion rate 30%, Pell dependency 20%, and admission rate 10% — and classifies them into four risk tiers: Critical, Elevated, Moderate, and Stable. It immediately surfaces which schools are most financially fragile."
+
+"Below that is a Grant Elasticity estimate — for every $1,000 increase in Pell funding, our regression model predicts how many additional students would complete degrees."
+
+    → Hover over a tooltip to show:
+      "Every metric has a tooltip explaining the calculation
+       and data source — complete transparency."
+
+VERTICAL EQUITY  (scroll to the Bar Chart + KPIs)
+
+"We also asked: does the money even reach the neediest students? Across 1,810 institutions, we calculated the average unmet need — the gap between what a family can pay, what Pell covers, and what the school charges. The green reference line on the chart is the max Pell award — every red bar above it represents a school where students must bridge that gap with loans or work."
+
+
+[2:30] ——— EQUITY MATRIX ———
+Show: Equity vs. Excellence scatter plot
+
+"This is where descriptive analysis meets predictive modeling. This is our Equity vs. Excellence Matrix."
+
+"Each dot is one institution. The X-axis measures the Pell completion gap — how much worse Pell students do versus their peers. The Y-axis measures 'Bending the Curve' — a predictive model that calculates whether a school's actual completion rate beats or falls short of what an OLS regression predicts for similar schools."
+
+"Top-right are Equity Champions — they close the gap AND outperform expectations. Bottom-left is the opposite."
+
+    → Click on a dot to show school detail card.
+    → Switch the X-axis to a different metric
+       (e.g. Instructional $/Student or Median Earnings).
+    → Filter by a state or college type.
+    → Drag the Pell Rate or Student Size sliders.
+
+"We built custom metrics — not just raw rates, but risk-adjusted performance. The 'Bending the Curve' model on the Y-axis is our core predictive tool — it's an OLS regression controlling for Pell rate, student size, instructional spend, and Carnegie class, with an R-squared of 0.506."
+
+"And the correlation between the two axes is near zero, meaning equity and excellence are independent dimensions — schools don't have to sacrifice one for the other."
+
+
+[3:45] ——— OPTIMIZATION STUDIO ———
+Show: Scroll to Optimizer Section
+
+"With the evidence and predictions clear, the next question is: what should we actually do? So we built an Optimization Studio."
+
+"This uses Linear Programming to answer: given a fixed budget, how should we distribute Pell dollars to maximize total graduates?"
+
+"Three strategies, side by side:"
+
+"Base — distribute evenly by enrollment. Performance — weight toward high value-add schools. Retention Trigger — concentrate on schools where students are at highest dropout risk."
+
+    → Drag the budget slider from $10M to $100M.
+
+"Watch — the predicted impact table updates in real time. Pell students reached, expected graduates, enrollment impact, cost per graduate."
+
+    → Click into the allocation table and scroll.
+
+"You can see exactly which institutions get funded and by how much. Baseline graduates, projected graduates, and enrollment uplift — institution by institution."
+
+"See this badge — Fairness Audited. We run every optimization through the fairlearn library to check for demographic parity. This ensures we're not 'creaming' — systematically excluding schools that serve the neediest populations."
+
+    → Say: "A policymaker could use this today to model the
+       impact of a budget increase before it's approved."
+
+
+[5:15] ——— POLICY RECOMMENDATIONS ———
+Show: Impact Section
+
+"The data leads to three evidence-based recommendations."
+
+"One — Index to Actual Costs. Tie the Pell maximum to public tuition rates, not just inflation."
+
+"Two — Risk-Sharing. If a school takes federal aid and fails to graduate those students, require partial repayment."
+
+"Three — Flexible Distribution. Front-load aid and create emergency micro-grants for financial shocks that cause preventable dropout."
+
+"But — any performance-based reform creates pressure to 'cream' — to reject high-risk students to protect metrics. Our fairness audits catch exactly that."
+
+
+[6:15] ——— CLOSE ———
+Show: Scroll back to Hero Section
+
+"Project Aegis Analytics transforms the College Scorecard from a static dataset into a living decision-support tool."
+
+"Descriptive analysis measured the erosion. Our Bending the Curve model and Viability Risk scores predict who's at risk. The Optimization Studio shows exactly where to invest."
+
+"Every metric has a tooltip. Every model is bias-audited. Every recommendation is grounded in real data from Data.gov."
+
+"Thank you."
+
+
+================================================
+QUICK Q&A PREP
+================================================
+• "Bending the Curve" — OLS regression residual as value-add
+  (R² = 0.506). Controls: Pell rate, size, spend, Carnegie class
+• Fairlearn — demographic parity + equalized odds tests
+• Data — College Scorecard API (Data.gov), 1,810 institutions
+• Viability composite — retention (40%), completion (30%),
+  Pell rate (20%), admission rate (10%)
+• Grant Elasticity — regression-based enrollment estimate
+  per $1,000 grant increase
+• Optimization — PuLP linear programming, 3 strategies

@@ -35,6 +35,15 @@ FIELDS = [
     'latest.completion.completion_rate_4yr_150nt',
     'latest.cost.net_price.public.by_income_level.0-30000',
     'latest.cost.net_price.private.by_income_level.0-30000',
+    # Additional income brackets for Vertical Equity analysis
+    'latest.cost.net_price.public.by_income_level.30001-48000',
+    'latest.cost.net_price.private.by_income_level.30001-48000',
+    'latest.cost.net_price.public.by_income_level.48001-75000',
+    'latest.cost.net_price.private.by_income_level.48001-75000',
+    'latest.cost.net_price.public.by_income_level.75001-110000',
+    'latest.cost.net_price.private.by_income_level.75001-110000',
+    'latest.cost.net_price.public.by_income_level.110001-plus',
+    'latest.cost.net_price.private.by_income_level.110001-plus',
     'latest.aid.median_debt.completers.overall',
     'latest.aid.pell_grant_rate',
     'latest.earnings.4_yrs_after_completion.median',
@@ -463,6 +472,14 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
         'latest.completion.completion_rate_4yr_150nt',
         'latest.cost.net_price.public.by_income_level.0-30000',
         'latest.cost.net_price.private.by_income_level.0-30000',
+        'latest.cost.net_price.public.by_income_level.30001-48000',
+        'latest.cost.net_price.private.by_income_level.30001-48000',
+        'latest.cost.net_price.public.by_income_level.48001-75000',
+        'latest.cost.net_price.private.by_income_level.48001-75000',
+        'latest.cost.net_price.public.by_income_level.75001-110000',
+        'latest.cost.net_price.private.by_income_level.75001-110000',
+        'latest.cost.net_price.public.by_income_level.110001-plus',
+        'latest.cost.net_price.private.by_income_level.110001-plus',
         'latest.aid.median_debt.completers.overall',
         'latest.aid.pell_grant_rate',
         'latest.earnings.4_yrs_after_completion.median',
@@ -474,9 +491,21 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce')
     
-    # Create unified net price column (public or private)
+    # Create unified net price columns by income bracket (public or private)
     df['net_price_low_income'] = df['latest.cost.net_price.public.by_income_level.0-30000'].fillna(
         df['latest.cost.net_price.private.by_income_level.0-30000']
+    )
+    df['net_price_30_48k'] = df['latest.cost.net_price.public.by_income_level.30001-48000'].fillna(
+        df['latest.cost.net_price.private.by_income_level.30001-48000']
+    )
+    df['net_price_48_75k'] = df['latest.cost.net_price.public.by_income_level.48001-75000'].fillna(
+        df['latest.cost.net_price.private.by_income_level.48001-75000']
+    )
+    df['net_price_75_110k'] = df['latest.cost.net_price.public.by_income_level.75001-110000'].fillna(
+        df['latest.cost.net_price.private.by_income_level.75001-110000']
+    )
+    df['net_price_110k_plus'] = df['latest.cost.net_price.public.by_income_level.110001-plus'].fillna(
+        df['latest.cost.net_price.private.by_income_level.110001-plus']
     )
     
     # Filter to schools with essential data
