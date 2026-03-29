@@ -245,6 +245,7 @@ export interface EnrollmentOptimization {
   budget_utilization: number;
   schools_funded: number;
   total_expected_graduates: number;
+  total_additional_grads?: number;
   avg_cost_per_graduate: number;
   total_pell_students?: number;
   // Baselines (status-quo across ALL eligible schools)

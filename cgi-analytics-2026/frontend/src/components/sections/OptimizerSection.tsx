@@ -44,15 +44,15 @@ function StrategyCard({
         <h3 className="text-title">{name}</h3>
       </div>
       
-      <p className="text-caption mb-6 min-h-[40px]">{description}</p>
+      <p className="text-caption mb-6">{description}</p>
       
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
-          <p className="text-label mb-1">Graduates</p>
+          <p className="text-label mb-1">New Grads</p>
           <p className="text-mono text-lg">{formatNumber(graduates)}</p>
         </div>
         <div>
-          <p className="text-label mb-1">Cost/Grad</p>
+          <p className="text-label mb-1">Cost / Grad</p>
           <p className="text-mono text-lg">{formatCurrency(costPerGrad)}</p>
         </div>
       </div>
@@ -139,6 +139,10 @@ export default function OptimizerSection({ initialComparison }: OptimizerSection
       description: 'Standard allocation optimized for enrollment volume (Elasticity Model).',
       graduates: baseStrategy?.graduates || 0,
       costPerGrad: baseStrategy?.cost_per_grad || 0,
+      specialMetric: { 
+        label: 'Schools Funded', 
+        value: baseStrategy?.schools_funded?.toString() || '0' 
+      },
     },
     {
       key: 'performance' as const,
@@ -167,8 +171,11 @@ export default function OptimizerSection({ initialComparison }: OptimizerSection
   ] : [];
 
   return (
-    <section id="optimizer" className="section bg-[var(--bg-void)] scroll-mt-8">
-      <div className="page-container">
+    <section id="optimizer" className="section bg-[var(--bg-void)] relative overflow-hidden scroll-mt-8">
+      {/* Background Gradient */}
+      <div className="absolute top-[30%] left-1/2 -translate-x-1/2 w-[120vw] max-w-[1500px] h-[1000px] bg-[var(--accent-emerald)]/[0.25] rounded-[100%] blur-[180px] pointer-events-none" />
+      
+      <div className="page-container relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -177,23 +184,10 @@ export default function OptimizerSection({ initialComparison }: OptimizerSection
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="text-label text-[var(--accent-emerald)] mb-4 block">THE SOLUTION</span>
-          <h2 className="text-section mb-4">Optimization Studio</h2>
-          <p className="text-body max-w-2xl mx-auto mb-6">
-            Understanding the problem isn&apos;t enough — decision-makers need to know where to invest.
-            This studio uses Linear Programming to simulate three allocation strategies under real budget constraints.<InfoTooltip text="Uses Linear Programming to allocate a fixed budget across eligible institutions. Each strategy weights schools differently based on enrollment elasticity, value-add scores, or dropout risk predictions." />
-          </p>
+          <h3 className="text-2xl font-bold uppercase tracking-wider text-[var(--accent-emerald)] mb-2">HOW TO RESTORE THE PROMISE</h3>
+          <h2 className="text-section mb-4">Where Should the Next Dollar Go?<InfoTooltip text="Understanding the problem isn't enough — decision-makers need to know where to invest. This studio uses Linear Programming to simulate three allocation strategies under real budget constraints. Each strategy weights schools differently based on enrollment elasticity, value-add scores, or dropout risk predictions." /></h2>
           
-          {/* Fairness Audit Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--accent-emerald)]/10 border border-[var(--accent-emerald)]/30">
-            <Shield size={16} className="text-[var(--accent-emerald)]" />
-            <span className="text-xs font-medium text-[var(--accent-emerald)] tracking-wide uppercase">
-              Fairness Audited
-            </span>
-            <span className="text-xs text-[var(--text-muted)]">
-              — Anti-creaming bias checks via fairlearn ensure equitable recommendations<InfoTooltip text="The fairlearn library tests for demographic parity and equalized odds, verifying the optimizer doesn't systematically exclude schools serving underrepresented populations." />
-            </span>
-          </div>
+
         </motion.div>
 
         {/* Strategy Cards */}
@@ -229,8 +223,7 @@ export default function OptimizerSection({ initialComparison }: OptimizerSection
         >
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
             <div>
-              <h3 className="text-title mb-1">Budget Allocation</h3>
-              <p className="text-caption">Adjust the total federal investment to see impact<InfoTooltip text="The slider range ($10M–$100M) is for interactive demonstration only. Actual annual Pell Grant disbursement is approximately $30 billion." /></p>
+              <h3 className="text-title mb-1">Drag to See Impact in Real Time<InfoTooltip text="Adjust the total federal investment to see impact. The slider range ($10M\u2013$100M) is for interactive demonstration only. Actual annual Pell Grant disbursement is approximately $30 billion." /></h3>
             </div>
             <div className="text-right">
               <div className="stat-value text-[var(--text-primary)]">{formatCurrency(budget)}</div>
@@ -260,8 +253,8 @@ export default function OptimizerSection({ initialComparison }: OptimizerSection
                 <span className="font-semibold text-[var(--accent-emerald)]">Key Insight:</span>{' '}
                 At a {formatCurrency(budget)} budget, the {selectedStrategy === 'base' ? 'Base' : selectedStrategy === 'performance' ? 'Performance' : 'Retention Trigger'} strategy 
                 would reach <strong className="text-[var(--text-primary)]">{formatNumber(optimization.total_pell_students || 0)}</strong> Pell students 
-                and produce <strong className="text-[var(--text-primary)]">{formatNumber(optimization.total_expected_graduates || 0)}</strong> additional graduates 
-                at <strong className="text-[var(--text-primary)]">{formatCurrency(optimization.avg_cost_per_graduate || 0)}</strong> per graduate
+                and produce <strong className="text-[var(--text-primary)]">{formatNumber(optimization.total_additional_grads || 0)}</strong> additional graduates 
+                at <strong className="text-[var(--text-primary)]">{formatCurrency(optimization.avg_cost_per_graduate || 0)}</strong> per marginal graduate
                 {optimization.total_enrollment_impact ? `, with ${formatNumber(optimization.total_enrollment_impact)} new enrollments predicted` : ''}.
               </p>
             </div>
@@ -304,8 +297,7 @@ export default function OptimizerSection({ initialComparison }: OptimizerSection
                         {formatNumber(optimization.total_expected_graduates || 0)}
                       </td>
                       <td className="py-3 text-right font-mono text-[var(--accent-emerald)]">
-                        {((optimization.total_expected_graduates || 0) - (optimization.baseline_expected_graduates || 0)) >= 0 ? '+' : ''}
-                        {formatNumber((optimization.total_expected_graduates || 0) - (optimization.baseline_expected_graduates || 0))}
+                        +{formatNumber(optimization.total_additional_grads || 0)}
                       </td>
                     </tr>
                     <tr className="border-b border-[var(--border-subtle)]/50">
@@ -330,8 +322,8 @@ export default function OptimizerSection({ initialComparison }: OptimizerSection
                         +{formatNumber(optimization.total_enrollment_impact || 0)} students
                       </td>
                     </tr>
-                    <tr>
-                      <td className="py-3 text-body">Cost per Graduate<InfoTooltip text="Total budget divided by projected graduates. Lower values indicate more cost-efficient allocation." /></td>
+                    <tr className="border-b border-[var(--border-subtle)]/50">
+                      <td className="py-3 text-body">Cost / Grad<InfoTooltip text="Cost per new marginal graduate produced (total budget divided by the net positive change in graduates)." /></td>
                       <td className="py-3 text-center text-[var(--text-muted)]">—</td>
                       <td className="py-3 text-center font-medium text-[var(--text-primary)]">
                         {formatCurrency(optimization.avg_cost_per_graduate || 0)}
@@ -357,7 +349,7 @@ export default function OptimizerSection({ initialComparison }: OptimizerSection
         >
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="text-title mb-1">Institution Allocations</h3>
+              <h3 className="text-title mb-1">See Exactly Which Schools Get Funded</h3>
               <p className="text-caption">
                 {showAll 
                   ? `All ${optimization?.allocations?.length || 0} institutions under ${selectedStrategy.replace(/_/g, ' ')} strategy`

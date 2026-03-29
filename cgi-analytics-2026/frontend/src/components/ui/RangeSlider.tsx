@@ -83,6 +83,7 @@ export function RangeSlider({
     teal: 'bg-teal-500',
     amber: 'bg-amber-500',
     blue: 'bg-blue-500',
+    white: 'bg-white',
   };
 
   return (

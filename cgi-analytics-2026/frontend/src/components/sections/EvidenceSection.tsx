@@ -93,7 +93,6 @@ export default function EvidenceSection({
   // atRiskCount and avgCompletionGap are passed from page.tsx but not directly rendered
   totalErosion = -36,
   viabilitySummary,
-  elasticityImpact = 370000,
   equityPerformanceData = null
 }: EvidenceSectionProps) {
 
@@ -284,8 +283,12 @@ export default function EvidenceSection({
   }, [completionGapData]);
 
   return (
-    <section id="evidence" className="section bg-[var(--bg-surface)]">
-      <div className="page-container">
+    <section id="evidence" className="section bg-[var(--bg-surface)] relative overflow-hidden">
+      {/* Background Gradients */}
+      <div className="absolute top-[5%] left-1/2 -translate-x-1/2 w-[120vw] max-w-[1500px] h-[1000px] bg-[var(--accent-red)]/[0.25] rounded-[100%] blur-[180px] pointer-events-none" />
+      <div className="absolute top-[65%] left-1/2 -translate-x-1/2 w-[120vw] max-w-[1500px] h-[1000px] bg-[var(--accent-amber)]/[0.25] rounded-[100%] blur-[180px] pointer-events-none" />
+      
+      <div className="page-container relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -294,11 +297,7 @@ export default function EvidenceSection({
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="text-label text-[var(--accent-red)] mb-4 block">THE EVIDENCE</span>
-          <h2 className="text-section mb-4">The Problem at Scale</h2>
-          <p className="text-body max-w-2xl mx-auto">
-            Descriptive and predictive metrics across {totalInstitutions > 0 ? totalInstitutions.toLocaleString() : '1,810'} institutions<InfoTooltip text="Institution-level data sourced from the U.S. Department of Education College Scorecard API (Data.gov). Updated annually with the most recent cohort data." /> highlight structural inefficiencies in federal higher education investment.
-          </p>
+          <h2 className="text-section text-[var(--accent-red)] mb-4 uppercase tracking-wider">WHY THE PROMISE BROKE<InfoTooltip text={`Descriptive and predictive metrics across ${totalInstitutions > 0 ? totalInstitutions.toLocaleString() : '1,810'} institutions highlight structural inefficiencies in federal higher education investment. Institution-level data sourced from the U.S. Department of Education College Scorecard API (Data.gov). Updated annually with the most recent cohort data.`} /></h2>
         </motion.div>
 
         {/* Evidence Grid */}
@@ -319,13 +318,12 @@ export default function EvidenceSection({
                   <div className="w-10 h-10 rounded-lg bg-[var(--accent-red)]/10 flex items-center justify-center">
                     <TrendingDown className="text-[var(--accent-red)]" size={20} />
                   </div>
-                  <h3 className="text-title">Purchasing Power Erosion</h3>
+                  <h3 className="text-title">Pell Covers Half What It Did in 1975<InfoTooltip text="Maximum Pell Grant as % of average Cost of Attendance (1974–2024). Calculated by dividing the max Pell award each year by average published CoA at 4-year public institutions. Source: College Board & Dept. of Education." /></h3>
                 </div>
-                <p className="text-caption">Maximum Pell Grant as % of average Cost of Attendance (1974–2024)<InfoTooltip text="Calculated by dividing the maximum Pell Grant award each year by the average published Cost of Attendance at 4-year public institutions. Source: College Board & Dept. of Education." /></p>
               </div>
               <div className="text-right">
                 <div className="stat-value stat-crisis">{totalErosion}%</div>
-                <p className="text-caption">Total Erosion<InfoTooltip text="The percentage-point decline from the 1975 peak coverage (61%) to today's coverage (~25%)." /></p>
+
               </div>
             </div>
             
@@ -342,15 +340,16 @@ export default function EvidenceSection({
                   <XAxis 
                     dataKey="year" 
                     stroke="rgba(255,255,255,0.3)"
-                    tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 11 }}
+                    tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 16 }}
                     tickLine={false}
                     axisLine={false}
+                    ticks={[1975, 1985, 1995, 2005, 2015, 2023]}
                   />
                   <YAxis 
                     domain={[0, 80]}
                     tickFormatter={(v) => `${v}%`}
                     stroke="rgba(255,255,255,0.3)"
-                    tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 11 }}
+                    tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 16 }}
                     tickLine={false}
                     axisLine={false}
                     width={45}
@@ -386,8 +385,10 @@ export default function EvidenceSection({
               <div className="w-12 h-12 rounded-xl bg-[var(--accent-blue)]/10 flex items-center justify-center mx-auto mb-3">
                 <Building2 className="text-[var(--accent-blue)]" size={22} />
               </div>
-              <h3 className="text-title mb-1">Viability Risk</h3>
-              <p className="text-caption text-sm">Institutional stability forecast<InfoTooltip text="Composite score based on retention rate (40%), completion rate (30%), Pell grant rate (20%), and admission rate (10%). Critical: failing on 3+ factors. Elevated: failing on 2. Moderate: failing on 1. Stable: passing all thresholds." /></p>
+              <h3 className="text-title mb-1">
+                {viabilitySummary ? `${viabilitySummary.critical_count + viabilitySummary.elevated_count} Schools Face Elevated Risk` : 'Schools Face Elevated Risk'}
+                <InfoTooltip text="Institutional stability forecast. Composite score based on retention rate (40%), completion rate (30%), Pell grant rate (20%), and admission rate (10%). Critical: failing on 3+ factors. Elevated: failing on 2. Moderate: failing on 1. Stable: passing all thresholds." />
+              </h3>
             </div>
             
             {viabilitySummary && totalInstitutions > 0 && (
@@ -426,14 +427,7 @@ export default function EvidenceSection({
               </div>
             )}
             
-            {/* Elasticity insight */}
-            <div className="mt-4 pt-3 border-t border-[var(--border-subtle)] text-center">
-              <p className="text-caption">Grant Elasticity<InfoTooltip text="Estimated additional students who would complete degrees for every $1,000 increase in the maximum Pell Grant, based on regression analysis of net price and completion rates." /></p>
-              <p className="text-lg font-semibold text-[var(--accent-emerald)]">
-                +{(elasticityImpact / 1000).toFixed(0)}K students
-              </p>
-              <p className="text-xs text-[var(--text-muted)]">per $1,000 grant increase</p>
-            </div>
+
           </motion.div>
 
           {/* BLOCK 2b: Model Performance */}
@@ -450,8 +444,7 @@ export default function EvidenceSection({
                 <div className="w-12 h-12 rounded-xl bg-[var(--accent-purple)]/10 flex items-center justify-center mx-auto mb-3">
                   <Award className="text-[var(--accent-purple)]" size={22} />
                 </div>
-                <h3 className="text-title mb-1">Model Performance</h3>
-                <p className="text-caption text-sm">Validated predictive accuracy<InfoTooltip text="All models are trained on real College Scorecard data. R² measures the proportion of variance explained by the model. AUC measures discriminative ability (1.0 = perfect, 0.5 = random)." /></p>
+                <h3 className="text-title mb-1">Four Models<InfoTooltip text="All models are trained on real College Scorecard data. R² measures the proportion of variance explained by the model. AUC measures discriminative ability (1.0 = perfect, 0.5 = random)." /></h3>
               </div>
               
               <div className="space-y-3">
@@ -459,7 +452,7 @@ export default function EvidenceSection({
                   <div key={idx} className="bg-[var(--bg-elevated)] rounded-lg p-3">
                     <div className="flex justify-between items-center mb-1">
                       <span className="text-xs font-medium text-[var(--text-secondary)]">{model.name}</span>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--bg-void)] text-[var(--text-muted)]">{model.type}</span>
+                      <span className="text-sm px-1.5 py-0.5 rounded bg-[var(--bg-void)] text-[var(--text-muted)]">{model.type}</span>
                     </div>
                     {model.r_squared !== undefined && model.r_squared !== null && (
                       <div className="flex items-baseline gap-1">
@@ -482,15 +475,8 @@ export default function EvidenceSection({
                         <span className="text-xs text-[var(--text-muted)]">base elasticity</span>
                       </div>
                     )}
-                    {model.factors && (
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {Object.entries(model.factors).map(([k, v]) => (
-                          <span key={k} className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--bg-void)] text-[var(--text-muted)]">
-                            {k.replace(/_/g, ' ')}: {v}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+
+
                   </div>
                 ))}
               </div>
@@ -512,14 +498,13 @@ export default function EvidenceSection({
                   <div className="w-10 h-10 rounded-lg bg-[var(--accent-amber)]/10 flex items-center justify-center">
                     <DollarSign className="text-[var(--accent-amber)]" size={20} />
                   </div>
-                  <h3 className="text-title">Vertical Equity Analysis</h3>
+                  <h3 className="text-title">Students Who Rely on The Pell Grant Still Owe...<InfoTooltip text="Does Pell aid reach the students who need it most? Compares average net price by family income bracket across 1,800+ institutions." /></h3>
                 </div>
-                <p className="text-caption">Does Pell aid reach the students who need it most?</p>
               </div>
               {verticalEquityData && (
                 <div className="text-right">
                   <div className="stat-value stat-crisis">${verticalEquityData.avg_unmet_need.toLocaleString()}</div>
-                  <p className="text-caption">Avg Unmet Need</p>
+
                 </div>
               )}
             </div>
@@ -545,7 +530,10 @@ export default function EvidenceSection({
                 </div>
 
                 {/* Bar chart: Net Price by Income Bracket */}
-                <p className="text-xs text-[var(--text-muted)] mb-2 font-medium uppercase tracking-wider">Average Net Price by Family Income</p>
+                <p className="text-sm text-[var(--text-muted)] mb-2 font-medium uppercase tracking-wider">
+                  Average Net Price by Family Income
+                  <InfoTooltip text="Red bars exceed the maximum Pell Grant — students must cover the gap with loans or work." />
+                </p>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
@@ -556,14 +544,14 @@ export default function EvidenceSection({
                       <XAxis
                         dataKey="bracket"
                         stroke="rgba(255,255,255,0.3)"
-                        tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 11 }}
+                        tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 16 }}
                         tickLine={false}
                         axisLine={false}
                       />
                       <YAxis
                         tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
                         stroke="rgba(255,255,255,0.3)"
-                        tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 11 }}
+                        tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 16 }}
                         tickLine={false}
                         axisLine={false}
                       />
@@ -595,14 +583,14 @@ export default function EvidenceSection({
                       />
                       <ReferenceLine
                         y={verticalEquityData.max_pell_award}
-                        stroke="#10b981"
+                        stroke="#ffffff"
                         strokeDasharray="6 4"
                         strokeWidth={2}
                         label={{
                           value: `Max Pell: $${verticalEquityData.max_pell_award.toLocaleString()}`,
                           position: 'insideTopRight',
-                          fill: '#10b981',
-                          fontSize: 11,
+                          fill: '#ffffff',
+                          fontSize: 16,
                           fontWeight: 600,
                         }}
                       />
@@ -621,9 +609,7 @@ export default function EvidenceSection({
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-                <p className="text-xs text-[var(--text-muted)] mt-3 text-center italic">
-                  Red bars exceed the maximum Pell Grant — students must cover the gap with loans or work
-                </p>
+
               </>
             ) : (
               <div className="h-64 flex items-center justify-center">
@@ -652,26 +638,26 @@ export default function EvidenceSection({
             transition={{ duration: 0.6, delay: 0.4 }}
             className="card card-glass border-gradient flex flex-col justify-center"
           >
-            <h3 className="text-title mb-4">The Core Problem</h3>
+            <h3 className="text-title mb-4">Federal Funding Does Not Equal Completion</h3>
             <p className="text-body mb-4">
               Universities receive Pell dollars based on <strong className="text-[var(--text-primary)]">enrollment</strong>, 
               not <strong className="text-[var(--text-primary)]">completion</strong>.<InfoTooltip text="Under current rules, schools receive Pell disbursements when students enroll. There is no financial clawback if those students drop out before earning a degree." />
             </p>
-            <p className="text-caption">
-              This can incentivize recruiting volume over student support, particularly at institutions with low completion rates.
-            </p>
+
           </motion.div>
 
-          {/* Narrative Transition */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="col-span-full text-center text-body text-[var(--text-muted)] my-6 max-w-2xl mx-auto italic"
+
+
+          {/* Who's Being Left Behind Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+            className="col-span-full text-center mt-12 mb-8"
           >
-            The data above reveals the systemic problem. But which institutions are actually beating the odds — and which need intervention?
-          </motion.p>
+            <h2 className="text-section text-[var(--accent-amber)] mb-4 uppercase tracking-wider">WHO&apos;S BEING LEFT BEHIND</h2>
+          </motion.div>
 
           {/* BLOCK 5: Pell Gap vs Bending the Curve Scatter Plot */}
           {equityPerformanceData && equityPerformanceData.schools.length > 0 && (
@@ -684,12 +670,9 @@ export default function EvidenceSection({
             >
               <div className="flex items-center gap-3 mb-2">
                 <Target className="w-6 h-6 text-[var(--accent-purple)]" />
-                <h3 className="text-title">Equity vs. Excellence Matrix<InfoTooltip text="Each dot represents one institution. X-axis measures the completion gap between Pell and non-Pell students. Y-axis measures 'Bending the Curve'—how much actual completion exceeds the prediction from an OLS model of comparable schools. Dot size reflects enrollment." /></h3>
+                <h3 className="text-title">Equity and Excellence Are Independent<InfoTooltip text="The data above reveals the systemic problem. But which institutions are actually beating the odds — and which need intervention? Each dot represents one institution. X-axis measures the completion gap between Pell and non-Pell students. Y-axis measures 'Bending the Curve'—how much actual completion exceeds the prediction from an OLS model of comparable schools. Dot size reflects enrollment." /></h3>
               </div>
-              <p className="text-caption mb-4">
-                Comparing Pell Gap (equity) with &ldquo;Bending the Curve&rdquo; (value-add). 
-                Schools in the top-right achieve both equity and excellence.
-              </p>
+
               
               {/* Filter Controls */}
               <div className="flex flex-wrap items-center gap-4 mb-4">
@@ -800,7 +783,7 @@ export default function EvidenceSection({
                   step={1}
                   value={pellRateRange}
                   onChange={setPellRateRange}
-                  accentColor="purple"
+                  accentColor="white"
                 />
                 
                 {/* Student Size Range */}
@@ -811,7 +794,7 @@ export default function EvidenceSection({
                   step={500}
                   value={studentSizeRange}
                   onChange={setStudentSizeRange}
-                  accentColor="teal"
+                  accentColor="white"
                 />
                 
                 {/* Instructional Spend Range */}
@@ -822,7 +805,7 @@ export default function EvidenceSection({
                   step={500}
                   value={instructionalSpendRange}
                   onChange={setInstructionalSpendRange}
-                  accentColor="amber"
+                  accentColor="white"
                 />
               </div>
               
@@ -944,7 +927,7 @@ export default function EvidenceSection({
               
               <div className="h-[450px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <ScatterChart margin={{ top: 20, right: 30, bottom: 40, left: 50 }}>
+                  <ScatterChart margin={{ top: 20, right: 30, bottom: 40, left: 90 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                     <XAxis 
                       type="number" 
@@ -953,12 +936,12 @@ export default function EvidenceSection({
                       domain={xAxisMetric === 'completion_gap' ? axisDomains.x : xAxisConfig.domain}
                       tickFormatter={xAxisConfig.formatter}
                       stroke="rgba(255,255,255,0.3)"
-                      tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 11 }}
+                      tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 16 }}
                       label={{ 
                         value: xAxisConfig.label, 
                         position: 'bottom', 
                         fill: 'rgba(255,255,255,0.5)',
-                        fontSize: 12
+                        fontSize: 16
                       }}
                     />
                     <YAxis 
@@ -968,13 +951,15 @@ export default function EvidenceSection({
                       domain={axisDomains.y}
                       tickFormatter={(v) => `${v?.toFixed(0) || 0}%`}
                       stroke="rgba(255,255,255,0.3)"
-                      tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 11 }}
+                      tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 16 }}
                       label={{ 
-                        value: 'Bending the Curve (Value-Add ↑)', 
+                        value: 'Bending the Curve', 
                         angle: -90, 
                         position: 'insideLeft', 
-                        fill: 'rgba(255,255,255,0.5)',
-                        fontSize: 12
+                        dx: -20,
+                        fill: '#ffffff',
+                        fontSize: 16,
+                        style: { textAnchor: 'middle' }
                       }}
                     />
                     <ZAxis type="number" dataKey="student_size" range={[30, 200]} />

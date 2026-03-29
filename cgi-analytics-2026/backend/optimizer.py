@@ -450,6 +450,7 @@ class PellGrantOptimizer:
         remaining_budget = budget
         total_allocated = 0
         total_graduates = 0
+        total_additional_grads = 0
         total_pell = 0
         total_enrollment_impact = 0
         
@@ -465,8 +466,6 @@ class PellGrantOptimizer:
             baseline_grads = int(row['expected_graduates'])
             
             # Projected (with grant funding)
-            grad_ratio = allocation / max(row['funding_need'], 1)
-            projected_grads = int(row['expected_graduates'] * min(grad_ratio, 1.0))
             
             # Enrollment impact from price elasticity model
             grant_per_student = allocation / max(row['pell_students'], 1)
@@ -480,10 +479,10 @@ class PellGrantOptimizer:
             enroll_change = enrollment['enrollment_change']
             
             # Additional graduates from enrollment lift
-            additional_grads_from_enrollment = int(enroll_change * row['completion_rate'] * row['pell_rate'])
-            projected_grads += additional_grads_from_enrollment
+            additional_grads = int(enroll_change * row['completion_rate'] * row['pell_rate'])
+            projected_grads = baseline_grads + additional_grads
             
-            cost_per_grad = allocation / projected_grads if projected_grads > 0 else float('inf')
+            cost_per_grad = allocation / additional_grads if additional_grads > 0 else 0
             
             allocations.append({
                 'school_id': int(row.get('id', 0)),
@@ -505,6 +504,7 @@ class PellGrantOptimizer:
             remaining_budget -= allocation
             total_allocated += allocation
             total_graduates += projected_grads
+            total_additional_grads += additional_grads
             total_pell += int(row['pell_students'])
             total_enrollment_impact += enroll_change
         
@@ -517,8 +517,9 @@ class PellGrantOptimizer:
             'schools_funded': len(allocations),
             'total_pell_students': total_pell,
             'total_expected_graduates': int(total_graduates),
+            'total_additional_grads': int(total_additional_grads),
             'total_enrollment_impact': total_enrollment_impact,
-            'avg_cost_per_graduate': round(total_allocated / total_graduates, 2) if total_graduates > 0 else 0,
+            'avg_cost_per_graduate': round(total_allocated / total_additional_grads, 2) if total_additional_grads > 0 else 0,
             'allocations': allocations[:30],
         }
     
@@ -558,6 +559,7 @@ class PellGrantOptimizer:
         remaining_bonus = bonus_pool
         total_allocated = 0
         total_graduates = 0
+        total_additional_grads = 0
         total_pell = 0
         bonus_allocated = 0
         total_enrollment_impact = 0
@@ -579,10 +581,6 @@ class PellGrantOptimizer:
             # Baseline (no intervention)
             baseline_grads = int(row['expected_graduates'])
             
-            # Projected (with grant funding)
-            grad_ratio = allocation / max(row['funding_need'], 1)
-            projected_grads = int(row['expected_graduates'] * min(grad_ratio, 1.0))
-            
             # Enrollment impact from price elasticity model
             grant_per_student = allocation / max(row['pell_students'], 1)
             enrollment = self.elasticity_model.predict_enrollment_change(
@@ -593,10 +591,12 @@ class PellGrantOptimizer:
                 admission_rate=float(row.get('admission_rate', 0.5) or 0.5),
             )
             enroll_change = enrollment['enrollment_change']
-            additional_grads = int(enroll_change * row['completion_rate'] * row['pell_rate'])
-            projected_grads += additional_grads
             
-            cost_per_grad = allocation / projected_grads if projected_grads > 0 else 0
+            # Additional graduates from enrollment lift
+            additional_grads = int(enroll_change * row['completion_rate'] * row['pell_rate'])
+            projected_grads = baseline_grads + additional_grads
+            
+            cost_per_grad = allocation / additional_grads if additional_grads > 0 else 0
             
             allocations.append({
                 'school_id': int(row.get('id', 0)),
@@ -622,6 +622,7 @@ class PellGrantOptimizer:
             remaining_bonus -= bonus
             total_allocated += allocation
             total_graduates += projected_grads
+            total_additional_grads += additional_grads
             total_pell += int(row['pell_students'])
             bonus_allocated += bonus
             total_enrollment_impact += enroll_change
@@ -639,8 +640,9 @@ class PellGrantOptimizer:
             'schools_funded': len(allocations),
             'total_pell_students': total_pell,
             'total_expected_graduates': int(total_graduates),
+            'total_additional_grads': int(total_additional_grads),
             'total_enrollment_impact': total_enrollment_impact,
-            'avg_cost_per_graduate': round(total_allocated / total_graduates, 2) if total_graduates > 0 else 0,
+            'avg_cost_per_graduate': round(total_allocated / total_additional_grads, 2) if total_additional_grads > 0 else 0,
             'allocations': allocations[:30],
         }
     
@@ -681,6 +683,7 @@ class PellGrantOptimizer:
         remaining_emergency = emergency_reserve
         total_allocated = 0
         total_graduates = 0
+        total_additional_grads = 0
         total_pell = 0
         emergency_allocated = 0
         students_with_micro_grants = 0
@@ -707,13 +710,8 @@ class PellGrantOptimizer:
             # Baseline (no intervention)
             baseline_grads = int(row['expected_graduates'])
             
-            # Projected (with grant funding)
-            grad_ratio = allocation / max(row['funding_need'], 1)
-            projected_grads = int(row['expected_graduates'] * min(grad_ratio, 1.0))
-            
             # Micro-grants improve retention by ~10% for recipients
             additional_retained = int(micro_grant_students * 0.10)
-            projected_grads += additional_retained
             
             # Enrollment impact from price elasticity model
             grant_per_student = allocation / max(row['pell_students'], 1)
@@ -725,10 +723,12 @@ class PellGrantOptimizer:
                 admission_rate=float(row.get('admission_rate', 0.5) or 0.5),
             )
             enroll_change = enrollment['enrollment_change']
-            additional_grads = int(enroll_change * row['completion_rate'] * row['pell_rate'])
-            projected_grads += additional_grads
             
-            cost_per_grad = allocation / projected_grads if projected_grads > 0 else 0
+            # Total new graduates from enrollment and retention
+            additional_grads = int(enroll_change * row['completion_rate'] * row['pell_rate']) + additional_retained
+            projected_grads = baseline_grads + additional_grads
+            
+            cost_per_grad = allocation / additional_grads if additional_grads > 0 else 0
             
             allocations.append({
                 'school_id': int(row.get('id', 0)),
@@ -755,6 +755,7 @@ class PellGrantOptimizer:
             remaining_emergency -= emergency_alloc
             total_allocated += allocation
             total_graduates += projected_grads
+            total_additional_grads += additional_grads
             total_pell += int(row['pell_students'])
             emergency_allocated += emergency_alloc
             students_with_micro_grants += micro_grant_students
@@ -777,9 +778,10 @@ class PellGrantOptimizer:
             'schools_funded': len(allocations),
             'total_pell_students': total_pell,
             'total_expected_graduates': int(total_graduates),
+            'total_additional_grads': int(total_additional_grads),
             'total_enrollment_impact': total_enrollment_impact,
             'total_graduates_with_lift': int(total_graduates),
-            'avg_cost_per_graduate': round(total_allocated / total_graduates, 2) if total_graduates > 0 else 0,
+            'avg_cost_per_graduate': round(total_allocated / total_additional_grads, 2) if total_additional_grads > 0 else 0,
             'allocations': allocations[:30],
         }
     
@@ -796,21 +798,21 @@ class PellGrantOptimizer:
             'comparison': [
                 {
                     'strategy': 'base',
-                    'graduates': base.get('total_expected_graduates', 0),
+                    'graduates': base.get('total_additional_grads', 0),
                     'cost_per_grad': base.get('avg_cost_per_graduate', 0),
                     'schools_funded': base.get('schools_funded', 0)
                 },
                 {
                     'strategy': 'performance',
-                    'graduates': performance.get('total_expected_graduates', 0),
+                    'graduates': performance.get('total_additional_grads', 0),
                     'cost_per_grad': performance.get('avg_cost_per_graduate', 0),
                     'schools_funded': performance.get('schools_funded', 0),
                     'bonus_schools': performance.get('bonus_eligible_schools', 0)
                 },
                 {
                     'strategy': 'retention_trigger',
-                    'graduates': retention.get('total_graduates_with_lift', 0),
-                    'cost_per_grad': budget / retention.get('total_graduates_with_lift', 1),
+                    'graduates': retention.get('total_additional_grads', 0),
+                    'cost_per_grad': retention.get('avg_cost_per_graduate', 0),
                     'schools_funded': retention.get('schools_funded', 0),
                     'micro_grant_students': retention.get('students_with_micro_grants', 0),
                     'intervention_lift': retention.get('intervention_lift', 0)

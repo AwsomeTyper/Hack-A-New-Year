@@ -79,9 +79,8 @@ export default function StateRiskChart() {
             <div className="w-10 h-10 rounded-lg bg-[var(--accent-red)]/10 flex items-center justify-center">
               <MapPin className="text-[var(--accent-red)]" size={20} />
             </div>
-            <h3 className="text-title">State Risk Distribution<InfoTooltip text="Aggregated from institutional viability scores (inverted: lower viability = higher risk). Shows the 15 states with the highest average risk among at-risk institutions." /></h3>
+            <h3 className="text-title">Risk Concentrates in a Handful of States<InfoTooltip text="Aggregated from institutional viability scores (inverted: lower viability = higher risk). Shows the 15 states with the highest average risk among at-risk institutions." /></h3>
           </div>
-          <p className="text-caption">Top 15 highest-risk states (avg Resilience Risk Index)</p>
         </div>
       </div>
       
@@ -96,13 +95,13 @@ export default function StateRiskChart() {
             <XAxis 
               type="number" 
               domain={[0, 100]}
-              tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 10 }}
+              tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 16 }}
               axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
             />
             <YAxis 
               type="category" 
               dataKey="state" 
-              tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 11, fontWeight: 500 }}
+              tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 16, fontWeight: 500 }}
               axisLine={{ stroke: 'rgba(255,255,255,0.1)' }}
               width={35}
             />

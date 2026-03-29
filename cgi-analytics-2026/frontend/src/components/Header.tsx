@@ -8,7 +8,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-[var(--bg-void)]/90 backdrop-blur-lg border-b border-[var(--border-subtle)]">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3">
-          <div className="relative w-10 h-10">
+          <div className="relative w-14 h-14">
             <Image 
               src="/logo-transparent.png" 
               alt="Project Aegis Logo" 
@@ -16,7 +16,7 @@ export default function Header() {
               className="object-contain"
             />
           </div>
-          <span className="font-semibold text-[var(--text-primary)]">Project Aegis</span>
+          <span className="font-semibold text-[var(--text-primary)]" style={{ fontSize: '24px' }}>Project Aegis</span>
         </Link>
         
         <nav className="flex items-center gap-6">

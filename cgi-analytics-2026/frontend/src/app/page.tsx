@@ -5,6 +5,7 @@ import HeroSection from '@/components/sections/HeroSection';
 import EvidenceSection from '@/components/sections/EvidenceSection';
 import OptimizerSection from '@/components/sections/OptimizerSection';
 import ImpactSection from '@/components/sections/ImpactSection';
+import RoadmapSection from '@/components/sections/RoadmapSection';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { 
@@ -128,6 +129,7 @@ export default function PolicyBrief() {
           currentCoverage={Math.round(currentCoverage)}
           historicalCoverage={Math.round(historicalCoverage)}
         />
+        <RoadmapSection />
         <EvidenceSection 
           purchasingPowerData={purchasingPowerTimeSeries}
           completionGapData={completionGapInstitutions}

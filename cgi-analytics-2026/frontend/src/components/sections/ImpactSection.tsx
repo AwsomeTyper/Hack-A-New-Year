@@ -8,27 +8,30 @@ export default function ImpactSection() {
   const insights = [
     {
       icon: <Lightbulb className="text-[var(--accent-amber)]" size={24} />,
-      title: "Index to Actual Costs",
+      title: "Tie Pell to Real Tuition — Not Just Inflation",
       description: "Pell Grants should be indexed to public tuition rates, not just inflation, restoring their original economic power.",
       tooltip: "Proposal: tie the Pell Grant maximum to published in-state tuition at public 4-year institutions, currently ~$11,260/yr, rather than a flat CPI adjustment."
     },
     {
       icon: <TrendingUp className="text-[var(--accent-emerald)]" size={24} />,
-      title: "Risk-Sharing Model",
+      title: "Make Schools Accountable for Completion",
       description: "Require universities to repay a portion of federal aid if students drop out or default—incentivizing completion over enrollment.",
       tooltip: "Under a risk-sharing model, schools would return a percentage of Pell funds if their 6-year completion rate falls below a minimum threshold, creating a financial incentive for student success."
     },
     {
       icon: <Shield className="text-[var(--accent-blue)]" size={24} />,
-      title: "Flexible Distribution",
+      title: "Catch Students Before They Drop Out",
       description: "Front-load aid and provide emergency micro-grants when students face financial shocks that threaten persistence.",
       tooltip: "Research suggests 68% of dropouts cite a financial emergency as a contributing factor. A small emergency grant ($500–$1,500) can prevent attrition at a fraction of the cost of replacing that student."
     }
   ];
 
   return (
-    <section id="impact" className="section bg-[var(--bg-surface)]">
-      <div className="page-container page-container-narrow">
+    <section id="impact" className="section bg-[var(--bg-surface)] relative overflow-hidden">
+      {/* Background Gradient */}
+      <div className="absolute top-[30%] left-1/2 -translate-x-1/2 w-[120vw] max-w-[1500px] h-[1000px] bg-[var(--accent-emerald)]/[0.25] rounded-[100%] blur-[180px] pointer-events-none" />
+      
+      <div className="page-container page-container-narrow relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -37,12 +40,7 @@ export default function ImpactSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="text-label text-[var(--accent-blue)] mb-4 block">THE PATH FORWARD</span>
-          <h2 className="text-section mb-4">Policy Recommendations</h2>
-          <p className="text-body max-w-2xl mx-auto">
-            The data reveals three evidence-based strategies to transform Pell Grants 
-            from access vouchers into completion investments.<InfoTooltip text="These recommendations are grounded in the descriptive, predictive, and prescriptive analyses presented in the Evidence section. Each strategy targets a specific structural inefficiency." />
-          </p>
+          <h2 className="text-section mb-4 text-[var(--accent-blue)] uppercase tracking-wider">POLICY RECOMMENDATIONS<InfoTooltip text="The data reveals three evidence-based strategies to transform Pell Grants from access vouchers into completion investments. These recommendations are grounded in the descriptive, predictive, and prescriptive analyses presented in the Evidence section. Each strategy targets a specific structural inefficiency." /></h2>
         </motion.div>
 
         {/* Insights Grid */}
@@ -68,22 +66,7 @@ export default function ImpactSection() {
           ))}
         </div>
 
-        {/* Caution Note */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          whileHover={{ y: -5 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.6 }}
-          className="card card-glass border-l-4 border-l-[var(--accent-amber)] mb-16"
-        >
-          <h3 className="text-title text-[var(--accent-amber)] mb-3">The &ldquo;Creaming&rdquo; Risk<InfoTooltip text="Named after the dairy metaphor—institutions 'skim the cream' by enrolling only the safest-bet students to boost their metrics, potentially shutting out the highest-need populations the Pell Grant was designed to serve." /></h3>
-          <p className="text-body">
-            Any performance-based reform must guard against <strong className="text-[var(--text-primary)]">&ldquo;creaming&rdquo;</strong>—where 
-            schools stop admitting high-risk students to protect their metrics. Effective policy must 
-            hold institutions accountable while <em>expanding</em> access for first-generation and low-income students.
-          </p>
-        </motion.div>
+
 
         {/* CTA */}
         <motion.div
@@ -107,10 +90,13 @@ export default function ImpactSection() {
               View Data Source
             </a>
             <button 
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="btn btn-ghost"
+              onClick={() => {
+                const el = document.getElementById('roadmap');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="btn btn-primary bg-[var(--accent-red)] hover:bg-[var(--accent-red)]/90 text-white"
             >
-              Back to Top
+              Back to Timeline
             </button>
           </div>
         </motion.div>
